@@ -10,6 +10,7 @@ package com.teamcautionrobotics.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,6 +23,14 @@ public class Robot extends TimedRobot {
   Hatch hatch;
   double armPower;
   EnhancedJoystick driverLeft, driverRight, manipulator;
+  DriveBase driveBase;
+
+  double driveLeftCommand;
+  double driveRightCommand;
+
+  Timer timer;
+
+  boolean deployButtonPressed = false;
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -38,6 +47,9 @@ public class Robot extends TimedRobot {
     driverLeft = new EnhancedJoystick(0);
     driverRight = new EnhancedJoystick(1);
     manipulator = new EnhancedJoystick(2);
+    driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+
+    timer = new Timer();
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
@@ -56,26 +68,35 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
     hatch.rotate(armPower);
-    //gives zero power to the motor so that the spring loaded hinge can drop the arm
-    zeroPower = 0;
-    hatch.drop(zeroPower);
-    //if B is pressed, deploy hatch pneumatics
-    hatch.deploy(manipulator.getButton(Button.B));
-   //if R is pressed, retract hatch pneumatics
-    hatch.retract(manipulator.getButton(Button.R));
-    if(deactivate = true)
-    {
-      //Counts for one second 
-      for(int i=0;i<1;i++)
-      {
 
-      
-      //rev wheels back for a second while disengaging pistons
-      driverLeft.set(-left);
-      driverRight.set(-right);
-      //Resets the "deactivate" variable so that it doesnt continue to go back and exectue the disengage protocol
-      deactivate.set(false);
-      }
+    //if B is pressed, deploy hatch pneumatics
+    
+    driveLeftCommand = driverLeft.getY();
+    driveRightCommand = driverRight.getY();
+
+    if (manipulator.getButton(Button.B))
+    {
+      hatch.deploy(manipulator.getButton(Button.B));
+      deployButtonPressed = true;
+    }
+    else
+    {
+        if (deployButtonPressed)
+        {
+          deployButtonPressed = false;
+
+          timer.reset();
+          timer.start();
+        }
+        hatch.deploy(false);
+    }
+    //Counts for .25 of a second
+    if (timer.get() < 0.25)
+    {
+      driveLeftCommand = -1;
+      driveRightCommand = -1;
+    } 
+      driveBase.drive(driveLeftCommand, driveRightCommand);      
     }
   }
 
