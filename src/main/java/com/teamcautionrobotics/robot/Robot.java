@@ -19,6 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+  Hatch hatch;
+  double armPower;
+  EnhancedJoystick driverLeft, driverRight, manipulator;
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -30,6 +34,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    hatch = new Hatch(0,1);
+    driverLeft = new EnhancedJoystick(0);
+    driverRight = new EnhancedJoystick(1);
+    manipulator = new EnhancedJoystick(2);
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -45,6 +54,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+    hatch.rotate(armPower);
+    //if B is pressed, deploy hatch pneumatics
+    hatch.deploy(manipulator.getButton(Button.B));
+    
   }
 
   /**

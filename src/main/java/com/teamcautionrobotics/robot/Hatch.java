@@ -9,14 +9,16 @@ public class Hatch {
     //pneumatics object
     Solenoid pusher;
 
-    public Hatch(int winchPort, int pusherPort){
+    public Hatch(int winchPort, int pusherPort) {
         winch = new VictorSP(winchPort);
         pusher = new Solenoid(pusherPort);
     }
-    public void rotate(double power){
+
+    public void rotate(double power) {
         winch.set(power);
     }
-    public void deploy(boolean activate){
+
+    public void deploy(boolean activate) {
         pusher.set(activate);
     }
 }
