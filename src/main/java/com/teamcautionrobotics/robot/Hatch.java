@@ -17,8 +17,15 @@ public class Hatch {
     public void rotate(double power) {
         winch.set(power);
     }
-
+    public void drop(boolean drop){
+        winch.set(power)
+    }
     public void deploy(boolean activate) {
         pusher.set(activate);
+        return activate;
+    }
+    public void retract(boolean deactivate) {
+        pusher.set(deactivate);
+        return deactivate;
     }
 }

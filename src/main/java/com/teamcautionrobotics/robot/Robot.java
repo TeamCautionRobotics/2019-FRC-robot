@@ -56,12 +56,26 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
     hatch.rotate(armPower);
+    //gives zero power to the motor so that the spring loaded hinge can drop the arm
+    zeroPower = 0;
+    hatch.drop(zeroPower);
     //if B is pressed, deploy hatch pneumatics
     hatch.deploy(manipulator.getButton(Button.B));
-    if(activate=false)
+   //if R is pressed, retract hatch pneumatics
+    hatch.retract(manipulator.getButton(Button.R));
+    if(deactivate = true)
     {
-      //rev wheels back for a second while disengaging pistons
+      //Counts for one second 
+      for(int i=0;i<1;i++)
+      {
+
       
+      //rev wheels back for a second while disengaging pistons
+      driverLeft.set(-left);
+      driverRight.set(-right);
+      //Resets the "deactivate" variable so that it doesnt continue to go back and exectue the disengage protocol
+      deactivate.set(false);
+      }
     }
   }
 
