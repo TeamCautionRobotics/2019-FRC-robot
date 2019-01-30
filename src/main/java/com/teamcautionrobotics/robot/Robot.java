@@ -58,7 +58,11 @@ public class Robot extends TimedRobot {
     hatch.rotate(armPower);
     //if B is pressed, deploy hatch pneumatics
     hatch.deploy(manipulator.getButton(Button.B));
-    
+    if(activate=false)
+    {
+      //rev wheels back for a second while disengaging pistons
+      
+    }
   }
 
   /**
