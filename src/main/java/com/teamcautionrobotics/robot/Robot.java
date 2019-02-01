@@ -7,6 +7,11 @@
 
 package com.teamcautionrobotics.robot;
 
+import com.teamcautionrobotics.misc2019.EnhancedJoystick;
+import com.teamcautionrobotics.misc2019.Gamepad;
+import com.teamcautionrobotics.misc2019.Gamepad.Axis;
+import com.teamcautionrobotics.misc2019.Gamepad.Button;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +27,8 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends TimedRobot {
   Hatch hatch;
   double armPower;
-  EnhancedJoystick driverLeft, driverRight, manipulator;
+  EnhancedJoystick driverLeft, driverRight;
+  Gamepad manipulator;
   DriveBase driveBase;
 
   double driveLeftCommand;
@@ -46,7 +52,7 @@ public class Robot extends TimedRobot {
     hatch = new Hatch(0,1);
     driverLeft = new EnhancedJoystick(0);
     driverRight = new EnhancedJoystick(1);
-    manipulator = new EnhancedJoystick(2);
+    manipulator = new Gamepad(2);
     driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
 
     timer = new Timer();
@@ -97,7 +103,6 @@ public class Robot extends TimedRobot {
       driveRightCommand = -1;
     } 
       driveBase.drive(driveLeftCommand, driveRightCommand);      
-    }
   }
 
   /**
