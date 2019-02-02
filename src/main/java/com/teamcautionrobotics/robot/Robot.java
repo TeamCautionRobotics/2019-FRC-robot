@@ -7,9 +7,15 @@
 
 package com.teamcautionrobotics.robot;
 
+import com.teamcautionrobotics.misc2019.EnhancedJoystick;
+import com.teamcautionrobotics.misc2019.Gamepad;
+import com.teamcautionrobotics.misc2019.Gamepad.Axis;
+import com.teamcautionrobotics.misc2019.Gamepad.Button;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,6 +25,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+  Hatch hatch;
+  double armPower;
+  EnhancedJoystick driverLeft, driverRight;
+  Gamepad manipulator;
+  DriveBase driveBase;
+
+  double driveLeftCommand;
+  double driveRightCommand;
+
+  Timer timer;
+
+  boolean deployButtonPressed = false;
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -30,6 +49,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    hatch = new Hatch(0,1);
+    driverLeft = new EnhancedJoystick(0);
+    driverRight = new EnhancedJoystick(1);
+    manipulator = new Gamepad(2);
+    driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+
+    timer = new Timer();
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -45,6 +72,37 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+    hatch.rotate(armPower);
+
+    //if B is pressed, deploy hatch pneumatics
+    
+    driveLeftCommand = driverLeft.getY();
+    driveRightCommand = driverRight.getY();
+
+    if (manipulator.getButton(Button.B))
+    {
+      hatch.deploy(manipulator.getButton(Button.B));
+      deployButtonPressed = true;
+    }
+    else
+    {
+        if (deployButtonPressed)
+        {
+          deployButtonPressed = false;
+
+          timer.reset();
+          timer.start();
+        }
+        hatch.deploy(false);
+    }
+    //Counts for .25 of a second
+    if (timer.get() < 0.25)
+    {
+      driveLeftCommand = -1;
+      driveRightCommand = -1;
+    } 
+      driveBase.drive(driveLeftCommand, driveRightCommand);      
   }
 
   /**
