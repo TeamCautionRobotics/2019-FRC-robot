@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    hatch = new Hatch(0,1);
+    hatch = new Hatch(2,1);
     driverLeft = new EnhancedJoystick(0);
     driverRight = new EnhancedJoystick(1);
     manipulator = new Gamepad(2);
@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
         hatch.deploy(false);
     }
     //Counts for .25 of a second
-    if (timer.get() < 0.25)
+    if (timer.get() > 0 && timer.get() < 0.25)
     {
       driveLeftCommand = -1;
       driveRightCommand = -1;
