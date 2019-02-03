@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.*;
 
 public class VelcroHatch {
     // motor object
-    VictorSP winch;
+    private VictorSP winch;
     // pneumatics object
-    Solenoid pusher;
+    private Solenoid pusher;
 
     public VelcroHatch(int winchPort, int pusherPort) {
         winch = new VictorSP(winchPort);
