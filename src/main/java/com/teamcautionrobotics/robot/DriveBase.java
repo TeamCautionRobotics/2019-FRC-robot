@@ -41,8 +41,8 @@ public class DriveBase {
 
         pidOutput = new DriveBasePIDOutput();
 
-        pidController = new PIDController(0.04, 0, 0.1, 0,
-                new DriveBasePIDSource(PIDSourceType.kDisplacement), pidOutput);
+        pidController = new PIDController(0.04, 0, 0.1, 0, new DriveBasePIDSource(PIDSourceType.kDisplacement),
+                pidOutput);
         pidController.setOutputRange(-1, 1);
         pidController.setAbsoluteTolerance(3);
 
@@ -116,16 +116,15 @@ public class DriveBase {
         return leftEncoder.getRate();
     }
 
-
     public void pidInit() {
         heading = getGyroAngle();
         courseHeading = heading;
     }
 
-
     private class DriveBasePIDOutput implements PIDOutput {
 
-        private DriveBasePIDOutput() {}
+        private DriveBasePIDOutput() {
+        }
 
         @Override
         public void pidWrite(double speed) {
@@ -144,12 +143,12 @@ public class DriveBase {
         @Override
         public double pidGet() {
             switch (type) {
-                case kDisplacement:
-                    return getDistance();
-                case kRate:
-                    return getSpeed();
-                default:
-                    return 0.0;
+            case kDisplacement:
+                return getDistance();
+            case kRate:
+                return getSpeed();
+            default:
+                return 0.0;
             }
         }
     }

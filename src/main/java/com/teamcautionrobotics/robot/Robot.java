@@ -25,131 +25,128 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-  Hatch hatch;
-  double armPower;
-  EnhancedJoystick driverLeft, driverRight;
-  Gamepad manipulator;
-  DriveBase driveBase;
+    Hatch hatch;
+    double armPower;
+    EnhancedJoystick driverLeft, driverRight;
+    Gamepad manipulator;
+    DriveBase driveBase;
 
-  double driveLeftCommand;
-  double driveRightCommand;
+    double driveLeftCommand;
+    double driveRightCommand;
 
-  Timer timer;
+    Timer timer;
 
-  boolean deployButtonPressed = false;
+    boolean deployButtonPressed = false;
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+    private static final String kDefaultAuto = "Default";
+    private static final String kCustomAuto = "My Auto";
+    private String m_autoSelected;
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
-   */
-  @Override
-  public void robotInit() {
-    hatch = new Hatch(2,1);
-    driverLeft = new EnhancedJoystick(0);
-    driverRight = new EnhancedJoystick(1);
-    manipulator = new Gamepad(2);
-    driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any initialization code.
+     */
+    @Override
+    public void robotInit() {
+        hatch = new Hatch(2, 1);
+        driverLeft = new EnhancedJoystick(0);
+        driverRight = new EnhancedJoystick(1);
+        manipulator = new Gamepad(2);
+        driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
 
-    timer = new Timer();
+        timer = new Timer();
 
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-  }
-
-  /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
-    hatch.rotate(armPower);
-
-    //if B is pressed, deploy hatch pneumatics
-    
-    driveLeftCommand = driverLeft.getY();
-    driveRightCommand = driverRight.getY();
-
-    if (manipulator.getButton(Button.B))
-    {
-      hatch.deploy(manipulator.getButton(Button.B));
-      deployButtonPressed = true;
+        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+        m_chooser.addOption("My Auto", kCustomAuto);
+        SmartDashboard.putData("Auto choices", m_chooser);
     }
-    else
-    {
-        if (deployButtonPressed)
-        {
-          deployButtonPressed = false;
 
-          timer.reset();
-          timer.start();
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for
+     * items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
+     *
+     * <p>
+     * This runs after the mode specific periodic functions, but before LiveWindow
+     * and SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+        hatch.rotate(armPower);
+
+        // if B is pressed, deploy hatch pneumatics
+
+        driveLeftCommand = driverLeft.getY();
+        driveRightCommand = driverRight.getY();
+
+        if (manipulator.getButton(Button.B)) {
+            hatch.deploy(manipulator.getButton(Button.B));
+            deployButtonPressed = true;
+        } else {
+            if (deployButtonPressed) {
+                deployButtonPressed = false;
+
+                timer.reset();
+                timer.start();
+            }
+            hatch.deploy(false);
         }
-        hatch.deploy(false);
+        // Counts for .25 of a second
+        if (timer.get() > 0 && timer.get() < 0.25) {
+            driveLeftCommand = -1;
+            driveRightCommand = -1;
+        }
+        driveBase.drive(driveLeftCommand, driveRightCommand);
     }
-    //Counts for .25 of a second
-    if (timer.get() > 0 && timer.get() < 0.25)
-    {
-      driveLeftCommand = -1;
-      driveRightCommand = -1;
-    } 
-      driveBase.drive(driveLeftCommand, driveRightCommand);      
-  }
 
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
-   */
-  @Override
-  public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
+    /**
+     * This autonomous (along with the chooser code above) shows how to select
+     * between different autonomous modes using the dashboard. The sendable chooser
+     * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+     * remove all of the chooser code and uncomment the getString line to get the
+     * auto name from the text box below the Gyro
+     *
+     * <p>
+     * You can add additional auto modes by adding additional comparisons to the
+     * switch structure below with additional strings. If using the SendableChooser
+     * make sure to add them to the chooser code above as well.
+     */
+    @Override
+    public void autonomousInit() {
+        m_autoSelected = m_chooser.getSelected();
+        // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+        System.out.println("Auto selected: " + m_autoSelected);
     }
-  }
 
-  /**
-   * This function is called periodically during operator control.
-   */
-  @Override
-  public void teleopPeriodic() {
-  }
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
+        switch (m_autoSelected) {
+        case kCustomAuto:
+            // Put custom auto code here
+            break;
+        case kDefaultAuto:
+        default:
+            // Put default auto code here
+            break;
+        }
+    }
 
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
-  }
+    /**
+     * This function is called periodically during operator control.
+     */
+    @Override
+    public void teleopPeriodic() {
+    }
+
+    /**
+     * This function is called periodically during test mode.
+     */
+    @Override
+    public void testPeriodic() {
+    }
 }

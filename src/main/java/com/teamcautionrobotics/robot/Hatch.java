@@ -4,9 +4,9 @@ package com.teamcautionrobotics.robot;
 import edu.wpi.first.wpilibj.*;
 
 public class Hatch {
-    //motor object
+    // motor object
     VictorSP winch;
-    //pneumatics object
+    // pneumatics object
     Solenoid pusher;
 
     public Hatch(int winchPort, int pusherPort) {
@@ -20,7 +20,7 @@ public class Hatch {
 
     public void deploy(boolean activate) {
         pusher.set(activate);
-        
+
     }
 
 }
