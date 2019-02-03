@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-    Hatch hatch;
+    VelcroHatch hatch;
     double armPower;
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        hatch = new Hatch(2, 1);
+        hatch = new VelcroHatch(2, 1);
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
