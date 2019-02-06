@@ -12,7 +12,9 @@ import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
 import com.teamcautionrobotics.misc2019.Gamepad.Button;
 
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,42 +27,43 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-  Hatch hatch;
-  double armPower;
-  EnhancedJoystick driverLeft, driverRight;
-  Gamepad manipulator;
-  DriveBase driveBase;
+    VelcroHatch hatch;
+    double armPower;
+    EnhancedJoystick driverLeft, driverRight;
+    Gamepad manipulator;
+    DriveBase driveBase;
 
-  double driveLeftCommand;
-  double driveRightCommand;
+    double driveLeftCommand;
+    double driveRightCommand;
 
-  Timer timer;
+    Timer timer;
 
-  boolean deployButtonPressed = false;
+    boolean deployButtonPressed = false;
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+    private static final String kDefaultAuto = "Default";
+    private static final String kCustomAuto = "My Auto";
+    private String m_autoSelected;
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
-   */
-  @Override
-  public void robotInit() {
-    hatch = new Hatch(2,1);
-    driverLeft = new EnhancedJoystick(0);
-    driverRight = new EnhancedJoystick(1);
-    manipulator = new Gamepad(2);
-    driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any initialization code.
+     */
+    @Override
+    public void robotInit() {
+        hatch = new VelcroHatch(2, 1);
+        driverLeft = new EnhancedJoystick(0);
+        driverRight = new EnhancedJoystick(1);
+        manipulator = new Gamepad(2);
+        driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+        CameraServer.getInstance().startAutomaticCapture();
 
-    timer = new Timer();
+        timer = new Timer();
 
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-  }
+        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+        m_chooser.addOption("My Auto", kCustomAuto);
+        SmartDashboard.putData("Auto choices", m_chooser);
+    }
 
   /**
    * This function is called every robot packet, no matter the mode. Use

@@ -10,7 +10,7 @@ public class ExpanderHatch{
     // pneumatics object pull back
     private Solenoid expander;
 
-    public OtherHatch(int extenderPort, int expanderPort) {
+    public ExpanderHatch(int extenderPort, int expanderPort) {
         extender = new Solenoid(extenderPort);
         expander = new Solenoid(expanderPort);
     }
