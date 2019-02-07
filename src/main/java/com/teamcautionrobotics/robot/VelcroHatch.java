@@ -3,13 +3,13 @@ package com.teamcautionrobotics.robot;
 
 import edu.wpi.first.wpilibj.*;
 
-public class Hatch {
-    //motor object
-    VictorSP winch;
-    //pneumatics object
-    Solenoid pusher;
+public class VelcroHatch {
+    // motor object
+    private VictorSP winch;
+    // pneumatics object
+    private Solenoid pusher;
 
-    public Hatch(int winchPort, int pusherPort) {
+    public VelcroHatch(int winchPort, int pusherPort) {
         winch = new VictorSP(winchPort);
         pusher = new Solenoid(pusherPort);
     }
@@ -20,7 +20,6 @@ public class Hatch {
 
     public void deploy(boolean activate) {
         pusher.set(activate);
-        
-    }
 
+    }
 }
