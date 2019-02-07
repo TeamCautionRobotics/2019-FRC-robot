@@ -22,5 +22,4 @@ public class VelcroHatch {
         pusher.set(activate);
 
     }
-
 }
