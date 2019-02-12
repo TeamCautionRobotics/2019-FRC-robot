@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
     DriveBase driveBase;
-
+    Flashlights Light;
     double driveLeftCommand;
     double driveRightCommand;
 
@@ -55,6 +55,7 @@ public class Robot extends TimedRobot {
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
+        Light = new Gamepad(3);
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -107,6 +108,11 @@ public class Robot extends TimedRobot {
       driveRightCommand = -1;
     } 
       driveBase.drive(driveLeftCommand, driveRightCommand);      
+  }
+  if(Light.getButton(Button.L))
+  {
+    flashlightRelay.set(Relay.Value.kForward);
+
   }
 
   /**
