@@ -23,9 +23,6 @@ public class Cargo {
     private final Solenoid deployFunnelRoller;
     private final Solenoid deployExitFlap;
 
-    private boolean deployedFunnelRoller = false;
-    private boolean lastToggleFunnelRoller = false;
-
     public Cargo(int funnelRollerPort, int conveyorRollerPort, int deployFunnelRollerPort, int deployExitFlapPort) {
         funnelRoller = new VictorSP(funnelRollerPort);
         conveyorRoller = new VictorSP(conveyorRollerPort);
@@ -42,12 +39,8 @@ public class Cargo {
         intake(funnelRollerSetting.power);
     }
 
-    public void deployFunnelRoller(boolean toggleFunnelRoller) {
-        if (!lastToggleFunnelRoller && toggleFunnelRoller) {
-            deployedFunnelRoller = !deployedFunnelRoller;
-        }
-        deployFunnelRoller.set(deployedFunnelRoller);
-        lastToggleFunnelRoller = toggleFunnelRoller;
+    public void deployFunnelRoller(boolean out) {
+        deployFunnelRoller.set(out);
     }
 
     public void deployExitFlap(boolean exitFlapStatus) {

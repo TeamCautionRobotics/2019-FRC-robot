@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
 
     boolean deployButtonPressed = false;
 
+    boolean deployedFunnelRoller = false;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -105,6 +107,11 @@ public class Robot extends TimedRobot {
 
         cargo.deployExitFlap(driverLeft.getTrigger());
         cargo.deployFunnelRoller(driverRight.getTrigger());
+
+        if (deployedFunnelRoller != driverRight.getTrigger()) {
+            deployedFunnelRoller = !deployedFunnelRoller;
+            cargo.deployFunnelRoller(deployedFunnelRoller);
+        }
     }
 
     @Override
