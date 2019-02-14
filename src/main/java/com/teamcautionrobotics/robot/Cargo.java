@@ -23,8 +23,8 @@ public class Cargo {
     private final Solenoid deployFunnelRoller;
     private final Solenoid deployExitFlap;
 
-    boolean deployedFunnelRoller = false;
-    boolean lastToggleFunnelRoller = false;
+    private boolean deployedFunnelRoller = false;
+    private boolean lastToggleFunnelRoller = false;
 
     public Cargo(int funnelRollerPort, int conveyorRollerPort, int deployFunnelRollerPort, int deployExitFlapPort) {
         funnelRoller = new VictorSP(funnelRollerPort);
