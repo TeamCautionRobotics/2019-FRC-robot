@@ -11,6 +11,7 @@ import com.teamcautionrobotics.misc2019.EnhancedJoystick;
 import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
 import com.teamcautionrobotics.misc2019.Gamepad.Button;
+import com.teamcautionrobotics.robot.Cargo.FunnelRollerSetting;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class Robot extends TimedRobot {
     VelcroHatch hatch;
+    Cargo cargo;
     double armPower;
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
@@ -49,6 +51,7 @@ public class Robot extends TimedRobot {
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+        cargo = new Cargo(3, 2, 3);
 
         timer = new Timer();
     }
@@ -84,12 +87,21 @@ public class Robot extends TimedRobot {
             }
             hatch.deploy(false);
         }
+
         // Counts for .25 of a second
         if (timer.get() > 0 && timer.get() < 0.25) {
             driveLeftCommand = -1;
             driveRightCommand = -1;
         }
         driveBase.drive(driveLeftCommand, driveRightCommand);
+
+        if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
+            cargo.intake(FunnelRollerSetting.THROUGH);
+        } else if (manipulator.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
+            cargo.intake(FunnelRollerSetting.BACK);
+        } else {
+            cargo.intake(FunnelRollerSetting.STOP);
+        }
     }
 
     @Override
