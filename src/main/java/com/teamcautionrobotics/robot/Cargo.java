@@ -15,9 +15,9 @@ public class Cargo {
         }
     }
 
-    //motor object
+    // motor object
     private final VictorSP funnelRoller;
-    //pneumatics object
+    // pneumatics object
     private final Solenoid deployFunnelRoller;
     private final Solenoid deployExitFlap;
 
@@ -39,14 +39,14 @@ public class Cargo {
     }
 
     public void deployFunnelRoller(boolean toggleFunnelRoller) {
-        if(!lastToggleFunnelRoller && toggleFunnelRoller){
+        if (!lastToggleFunnelRoller && toggleFunnelRoller) {
             deployedFunnelRoller = !deployedFunnelRoller;
         }
         deployFunnelRoller.set(deployedFunnelRoller);
         lastToggleFunnelRoller = toggleFunnelRoller;
     }
 
-    public void deployExitFlap(boolean exitFlapStatus){
+    public void deployExitFlap(boolean exitFlapStatus) {
         deployExitFlap.set(exitFlapStatus);
     }
 }
