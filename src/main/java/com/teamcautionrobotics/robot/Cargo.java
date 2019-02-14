@@ -17,6 +17,7 @@ public class Cargo {
 
     // motor object
     private final VictorSP funnelRoller;
+    private final VictorSP conveyorRoller;
     // pneumatics object
     private final Solenoid deployFunnelRoller;
     private final Solenoid deployExitFlap;
@@ -24,14 +25,16 @@ public class Cargo {
     boolean deployedFunnelRoller = false;
     boolean lastToggleFunnelRoller = false;
 
-    public Cargo(int funnelRollerPort, int deployFunnelRollerPort, int deployExitFlapPort) {
+    public Cargo(int funnelRollerPort, int conveyorRollerPort, int deployFunnelRollerPort, int deployExitFlapPort) {
         funnelRoller = new VictorSP(funnelRollerPort);
+        conveyorRoller = new VictorSP(conveyorRollerPort);
         deployFunnelRoller = new Solenoid(deployFunnelRollerPort);
         deployExitFlap = new Solenoid(deployExitFlapPort);
     }
 
     public void intake(double power) {
         funnelRoller.set(power);
+        conveyorRoller.set(power);
     }
 
     public void intake(FunnelRollerSetting funnelRollerSetting) {
