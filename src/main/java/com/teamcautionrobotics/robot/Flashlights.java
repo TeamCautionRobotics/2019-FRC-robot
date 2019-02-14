@@ -13,9 +13,14 @@ public class Flashlights {
       FlashlightRelay2 = new Relay(port2);
    }
 
-   public void set(boolean true)
+   public void set(boolean on)
    {
-      FlashlightRelay1.set(Relay.Value.kOn);
-      FlashlightRelay2.set(Relay.Value.kOn);
+      if (on) {
+         FlashlightRelay1.set(Relay.Value.kOn);
+         FlashlightRelay2.set(Relay.Value.kOn);
+      } else {
+         FlashlightRelay1.set(Relay.Value.kOff);
+         FlashlightRelay2.set(Relay.Value.kOff);
+      }
    }
 }
