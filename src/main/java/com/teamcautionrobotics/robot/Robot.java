@@ -26,7 +26,8 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-    VelcroHatch hatch;
+    VelcroHatch velcroHatch;
+    ExpanderHatch expanderHatch;
     double armPower;
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
@@ -39,6 +40,11 @@ public class Robot extends TimedRobot {
 
     boolean deployButtonPressed = false;
 
+    // These are for the Expander Hatch mechanism
+    boolean reacherButtonPressed = false;
+    boolean grabberButtonPressed = false;
+
+    private final boolean usingVelcroHatch = true;
     private static final String kDefaultAuto = "Default";
     private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
@@ -50,7 +56,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        hatch = new VelcroHatch(2, 1);
+        // pneumatic ports are not finalized
+        velcroHatch = new VelcroHatch(2, 1);
+        expanderHatch = new ExpanderHatch(3, 4);
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
@@ -78,33 +86,46 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
-        hatch.rotate(armPower);
+        velcroHatch.rotate(armPower);
 
         // if B is pressed, deploy hatch pneumatics
 
         driveLeftCommand = driverLeft.getY();
         driveRightCommand = driverRight.getY();
 
-        if (manipulator.getButton(Button.B)) {
-            hatch.deploy(manipulator.getButton(Button.B));
-            deployButtonPressed = true;
-        } else {
-            if (deployButtonPressed) {
-                deployButtonPressed = false;
-
-                timer.reset();
-                timer.start();
-            }
-            hatch.deploy(false);
-        }
-        // Counts for .25 of a second
-        if (timer.get() > 0 && timer.get() < 0.25) {
-            driveLeftCommand = -1;
-            driveRightCommand = -1;
-        }
-        driveBase.drive(driveLeftCommand, driveRightCommand);
-
         lights.set(driverLeft.getRawButton(2));
+
+        if (usingVelcroHatch) {
+            if (manipulator.getButton(Button.B)) {
+                velcroHatch.deploy(manipulator.getButton(Button.B));
+                deployButtonPressed = true;
+            } else {
+                if (deployButtonPressed) {
+                    deployButtonPressed = false;
+    
+                    timer.reset();
+                    timer.start();
+                }
+                velcroHatch.deploy(false);
+            }
+            // Counts for .25 of a second
+            if (timer.get() > 0 && timer.get() < 0.25) {
+                driveLeftCommand = -1;
+                driveRightCommand = -1;
+            }
+        } else {
+            if (manipulator.getButton(Button.A) != reacherButtonPressed) {
+                reacherButtonPressed = manipulator.getButton(Button.A);
+                expanderHatch.reach(reacherButtonPressed);
+            }
+
+            if (manipulator.getButton(Button.B) != grabberButtonPressed) {
+                grabberButtonPressed = manipulator.getButton(Button.B);
+                expanderHatch.grab(grabberButtonPressed);
+            }
+        }
+        
+        driveBase.drive(driveLeftCommand, driveRightCommand);
     }
 
     /**
