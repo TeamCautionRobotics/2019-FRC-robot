@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
     DriveBase driveBase;
-    Flashlights lights;
+    AimingLights aimingLights;
     double driveLeftCommand;
     double driveRightCommand;
 
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
-        lights = new Flashlights(0, 1);
+        aimingLights = new AimingLights(0, 1);
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
         driveLeftCommand = driverLeft.getY();
         driveRightCommand = driverRight.getY();
 
-        lights.set(driverLeft.getRawButton(2));
+        aimingLights.set(driverLeft.getRawButton(2));
 
         if (usingVelcroHatch) {
             if (manipulator.getButton(Button.B)) {
