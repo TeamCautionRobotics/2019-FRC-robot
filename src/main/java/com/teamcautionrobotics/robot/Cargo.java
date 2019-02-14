@@ -1,7 +1,8 @@
 
 package com.teamcautionrobotics.robot;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.VictorSP;
 
 public class Cargo {
 
