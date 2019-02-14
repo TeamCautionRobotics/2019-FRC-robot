@@ -5,6 +5,16 @@ import edu.wpi.first.wpilibj.*;
 
 public class Cargo {
 
+    public enum FunnelRollerSetting {
+        THROUGH(1), BACK(-1), STOP(0);
+
+        public final double power;
+
+        private FunnelRollerSetting(double power) {
+            this.power = power;
+        }
+    }
+
     //motor object
     private final VictorSP funnelRoller;
     //pneumatics object
@@ -24,6 +34,8 @@ public class Cargo {
         funnelRoller.set(power);
     }
 
+    public void intake(FunnelRollerSetting funnelRollerSetting) {
+        intake(funnelRollerSetting.power);
     }
 
     public void deployFunnelRoller(boolean toggleFunnelRoller) {
