@@ -7,8 +7,8 @@ public class Cargo {
     //motor object
     private final VictorSP funnelRoller;
     //pneumatics object
-    Solenoid deployFunnelRoller;
-    Solenoid deployExitFlap;
+    private final Solenoid deployFunnelRoller;
+    private final Solenoid deployExitFlap;
 
     boolean deployedFunnelRoller = false;
 
