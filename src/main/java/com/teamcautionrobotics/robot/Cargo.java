@@ -24,7 +24,7 @@ public class Cargo {
     boolean deployedFunnelRoller = false;
     boolean lastToggleFunnelRoller = false;
 
-    public Cargo(int funnelRollerPort, int backRollerConveyorPort, int deployFunnelRollerPort, int deployExitFlapPort) {
+    public Cargo(int funnelRollerPort, int deployFunnelRollerPort, int deployExitFlapPort) {
         funnelRoller = new VictorSP(funnelRollerPort);
         deployFunnelRoller = new Solenoid(deployFunnelRollerPort);
         deployExitFlap = new Solenoid(deployExitFlapPort);
