@@ -12,7 +12,6 @@ import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
 import com.teamcautionrobotics.misc2019.Gamepad.Button;
 
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -32,7 +31,7 @@ public class Robot extends TimedRobot {
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
     DriveBase driveBase;
-    Flashlights Light;
+    Flashlights lights;
     double driveLeftCommand;
     double driveRightCommand;
 
@@ -55,7 +54,7 @@ public class Robot extends TimedRobot {
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
-        Light = new Gamepad(3);
+        lights = new Flashlights(0, 1);
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -67,99 +66,93 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Auto choices", m_chooser);
     }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
-    hatch.rotate(armPower);
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for
+     * items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
+     *
+     * <p>
+     * This runs after the mode specific periodic functions, but before LiveWindow
+     * and SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+        hatch.rotate(armPower);
 
-    //if B is pressed, deploy hatch pneumatics
-    
-    driveLeftCommand = driverLeft.getY();
-    driveRightCommand = driverRight.getY();
+        // if B is pressed, deploy hatch pneumatics
 
-    if (manipulator.getButton(Button.B))
-    {
-      hatch.deploy(manipulator.getButton(Button.B));
-      deployButtonPressed = true;
-    }
-    else
-    {
-        if (deployButtonPressed)
-        {
-          deployButtonPressed = false;
+        driveLeftCommand = driverLeft.getY();
+        driveRightCommand = driverRight.getY();
 
-          timer.reset();
-          timer.start();
+        if (manipulator.getButton(Button.B)) {
+            hatch.deploy(manipulator.getButton(Button.B));
+            deployButtonPressed = true;
+        } else {
+            if (deployButtonPressed) {
+                deployButtonPressed = false;
+
+                timer.reset();
+                timer.start();
+            }
+            hatch.deploy(false);
         }
-        hatch.deploy(false);
+        // Counts for .25 of a second
+        if (timer.get() > 0 && timer.get() < 0.25) {
+            driveLeftCommand = -1;
+            driveRightCommand = -1;
+        }
+        driveBase.drive(driveLeftCommand, driveRightCommand);
+
+        lights.set(driverLeft.getRawButton(2));
     }
-    //Counts for .25 of a second
-    if (timer.get() > 0 && timer.get() < 0.25)
-    {
-      driveLeftCommand = -1;
-      driveRightCommand = -1;
-    } 
-      driveBase.drive(driveLeftCommand, driveRightCommand);      
-  }
-  if(Light.getButton(Button.L))
-  {
-    flashlightRelay.set(Relay.Value.kForward);
 
-  }
-
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
-   */
-  @Override
-  public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
+    /**
+     * This autonomous (along with the chooser code above) shows how to select
+     * between different autonomous modes using the dashboard. The sendable chooser
+     * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+     * remove all of the chooser code and uncomment the getString line to get the
+     * auto name from the text box below the Gyro
+     *
+     * <p>
+     * You can add additional auto modes by adding additional comparisons to the
+     * switch structure below with additional strings. If using the SendableChooser
+     * make sure to add them to the chooser code above as well.
+     */
+    @Override
+    public void autonomousInit() {
+        m_autoSelected = m_chooser.getSelected();
+        // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+        System.out.println("Auto selected: " + m_autoSelected);
     }
-  }
 
-  /**
-   * This function is called periodically during operator control.
-   */
-  @Override
-  public void teleopPeriodic() {
-  }
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
+        switch (m_autoSelected) {
+        case kCustomAuto:
+            // Put custom auto code here
+            break;
+        case kDefaultAuto:
+        default:
+            // Put default auto code here
+            break;
+        }
+    }
 
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
-  }
+    /**
+     * This function is called periodically during operator control.
+     */
+    @Override
+    public void teleopPeriodic() {
+    }
+
+    /**
+     * This function is called periodically during test mode.
+     */
+    @Override
+    public void testPeriodic() {
+    }
 }
