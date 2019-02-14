@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
-        cargo = new Cargo(3, 2, 3);
+        cargo = new Cargo(3, 4, 2, 3);
 
         timer = new Timer();
     }
