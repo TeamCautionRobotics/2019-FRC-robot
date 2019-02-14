@@ -5,20 +5,22 @@ import edu.wpi.first.wpilibj.*;
 
 public class ExpanderHatch{
     
-    // pneumatics object push out
-    private final Solenoid extender;
-    // pneumatics object pull back
-    private final Solenoid expander;
+    // pneumatics objects
+    // reacher extends away from the robot
+    // grabber piston applies friction to the hatch by expanding
+    private final Solenoid reacher;
+    private final Solenoid grabber;
 
-    public ExpanderHatch(int extenderPort, int expanderPort) {
-        extender = new Solenoid(extenderPort);
-        expander = new Solenoid(expanderPort);
+    public ExpanderHatch(int reacherPort, int grabberPort) {
+        reacher = new Solenoid(reacherPort);
+        grabber = new Solenoid(grabberPort);
     }
 
-    public void deploy(boolean extend) {
-        extender.set(extend);
+    public void reach(boolean out) {
+        reacher.set(out);
     }
-    public void pullback(boolean out) {
-        expander.set(out);
+
+    public void grab(boolean out) {
+        grabber.set(out);
     }
 }
