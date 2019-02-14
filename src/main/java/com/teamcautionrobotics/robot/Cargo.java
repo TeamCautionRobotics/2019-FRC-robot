@@ -4,6 +4,7 @@ package com.teamcautionrobotics.robot;
 import edu.wpi.first.wpilibj.*;
 
 public class Cargo {
+
     //motor object
     private final VictorSP funnelRoller;
     //pneumatics object
@@ -11,6 +12,7 @@ public class Cargo {
     private final Solenoid deployExitFlap;
 
     boolean deployedFunnelRoller = false;
+    boolean lastToggleFunnelRoller = false;
 
     public Cargo(int funnelRollerPort, int backRollerConveyorPort, int deployFunnelRollerPort, int deployExitFlapPort) {
         funnelRoller = new VictorSP(funnelRollerPort);
@@ -25,15 +27,14 @@ public class Cargo {
     }
 
     public void deployFunnelRoller(boolean toggleFunnelRoller) {
-        if((lastToggleFunnelRoller == false) && (toggleFunnelRoller == true)){
+        if(!lastToggleFunnelRoller && toggleFunnelRoller){
             deployedFunnelRoller = !deployedFunnelRoller;
         }
         deployFunnelRoller.set(deployedFunnelRoller);
-        boolean lastToggleFunnelRoller = toggleFunnelRoller;
+        lastToggleFunnelRoller = toggleFunnelRoller;
     }
 
     public void deployExitFlap(boolean exitFlapStatus){
-        deployExitFlap.set(exitFlapStatus)
+        deployExitFlap.set(exitFlapStatus);
     }
-}
 }
