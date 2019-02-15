@@ -1,7 +1,7 @@
 
 package com.teamcautionrobotics.robot;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class ExpanderHatch{
     
