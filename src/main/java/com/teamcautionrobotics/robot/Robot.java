@@ -105,13 +105,12 @@ public class Robot extends TimedRobot {
             cargo.intake(CargoMoverSetting.STOP);
         }
 
-        cargo.deployExitFlap(driverLeft.getTrigger());
-        cargo.deployFunnelRoller(driverRight.getTrigger());
-
-        if (deployedFunnelRoller != driverRight.getTrigger()) {
-            deployedFunnelRoller = !deployedFunnelRoller;
-            cargo.deployFunnelRoller(deployedFunnelRoller);
+        if (deployedFunnelRoller != driverRight.getTrigger() && driverRight.getTrigger()) {
+            cargo.toggleFunnelRoller();
         }
+        deployedFunnelRoller = driverRight.getTrigger();
+
+        cargo.deployExitFlap(driverLeft.getTrigger());
     }
 
     @Override
