@@ -26,21 +26,25 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-    VelcroHatch velcroHatch;
-    ExpanderHatch expanderHatch;
-    double armPower;
+
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
+
     DriveBase driveBase;
+    VelcroHatch velcroHatch;
+    ExpanderHatch expanderHatch;
+
     AimingLights aimingLights;
+    Timer timer;
+
+    double armPower;
     double driveLeftCommand;
     double driveRightCommand;
 
-    Timer timer;
-
+    // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
 
-    // These are for the Expander Hatch mechanism
+    // These are for the Expander Hatch mechanism.
     boolean reacherButtonPressed = false;
     boolean grabberButtonPressed = false;
 
@@ -56,18 +60,20 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // pneumatic ports are not finalized
-        velcroHatch = new VelcroHatch(2, 1);
-        expanderHatch = new ExpanderHatch(3, 4);
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
-        aimingLights = new AimingLights(0, 1);
+
+        // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+        velcroHatch = new VelcroHatch(2, 1);
+        expanderHatch = new ExpanderHatch(3, 4);
+
+        aimingLights = new AimingLights(0, 1);
+        timer = new Timer();
+
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
-
-        timer = new Timer();
 
         m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         m_chooser.addOption("My Auto", kCustomAuto);
@@ -85,17 +91,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
-        velcroHatch.rotate(armPower);
-
-        // if B is pressed, deploy hatch pneumatics
-
         driveLeftCommand = driverLeft.getY();
         driveRightCommand = driverRight.getY();
 
-        aimingLights.set(driverLeft.getRawButton(2));
-
         if (usingVelcroHatch) {
+            armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+            velcroHatch.rotate(armPower);
+
             if (manipulator.getButton(Button.B)) {
                 velcroHatch.deploy(manipulator.getButton(Button.B));
                 deployButtonPressed = true;
@@ -126,6 +128,8 @@ public class Robot extends TimedRobot {
         }
 
         driveBase.drive(driveLeftCommand, driveRightCommand);
+
+        aimingLights.set(driverLeft.getRawButton(2));
     }
 
     /**
