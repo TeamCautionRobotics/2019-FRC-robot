@@ -1,11 +1,9 @@
-
 package com.teamcautionrobotics.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 
 public class Cargo {
-
     public enum CargoMoverSetting {
         THROUGH(1), BACK(-1), STOP(0);
 
