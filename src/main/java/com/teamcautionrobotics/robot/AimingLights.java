@@ -7,9 +7,13 @@ public class AimingLights {
    private final Relay FlashlightRelay1;
    private final Relay FlashlightRelay2;
 
+   private boolean currentSetting;
+
    public AimingLights(int port1, int port2) {
       FlashlightRelay1 = new Relay(port1);
       FlashlightRelay2 = new Relay(port2);
+
+      currentSetting = false;
    }
 
    public void set(boolean on) {
@@ -20,5 +24,10 @@ public class AimingLights {
          FlashlightRelay1.set(Relay.Value.kOff);
          FlashlightRelay2.set(Relay.Value.kOff);
       }
+      currentSetting = on;
+   }
+
+   public void changeState() {
+      set(!currentSetting);
    }
 }

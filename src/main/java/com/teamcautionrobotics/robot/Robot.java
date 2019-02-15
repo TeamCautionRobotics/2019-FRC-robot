@@ -48,6 +48,8 @@ public class Robot extends TimedRobot {
     boolean reacherButtonPressed = false;
     boolean grabberButtonPressed = false;
 
+    boolean aimingLightsButtonPressed = false;
+
     private final boolean usingVelcroHatch = true;
 
     /**
@@ -59,15 +61,15 @@ public class Robot extends TimedRobot {
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
-        
+
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
         velcroHatch = new VelcroHatch(2, 1);
         expanderHatch = new ExpanderHatch(3, 4);
-        
+
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
-        
+
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
     }
@@ -85,18 +87,18 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         driveLeftCommand = driverLeft.getY();
         driveRightCommand = driverRight.getY();
-        
+
         if (usingVelcroHatch) {
             armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
-        
+
             if (manipulator.getButton(Button.B)) {
                 velcroHatch.deploy(manipulator.getButton(Button.B));
                 deployButtonPressed = true;
             } else {
                 if (deployButtonPressed) {
                     deployButtonPressed = false;
-        
+
                     timer.reset();
                     timer.start();
                 }
@@ -112,7 +114,7 @@ public class Robot extends TimedRobot {
                 reacherButtonPressed = manipulator.getButton(Button.A);
                 expanderHatch.reach(reacherButtonPressed);
             }
-        
+
             if (manipulator.getButton(Button.B) != grabberButtonPressed) {
                 grabberButtonPressed = manipulator.getButton(Button.B);
                 expanderHatch.grab(grabberButtonPressed);
@@ -120,8 +122,11 @@ public class Robot extends TimedRobot {
         }
 
         driveBase.drive(driveLeftCommand, driveRightCommand);
-        
-        aimingLights.set(driverLeft.getRawButton(2));
+
+        if (driverLeft.getRawButton(2) != aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
+            aimingLights.changeState();
+        }
+        aimingLightsButtonPressed = driverLeft.getRawButton(2);
     }
 
     @Override
