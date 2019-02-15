@@ -1,7 +1,8 @@
 
 package com.teamcautionrobotics.robot;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.VictorSP;
 
 public class VelcroHatch {
     // motor object
@@ -20,6 +21,5 @@ public class VelcroHatch {
 
     public void deploy(boolean activate) {
         pusher.set(activate);
-
     }
 }

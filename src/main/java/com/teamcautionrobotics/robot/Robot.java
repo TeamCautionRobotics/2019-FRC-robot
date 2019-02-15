@@ -13,6 +13,7 @@ import com.teamcautionrobotics.misc2019.Gamepad.Axis;
 import com.teamcautionrobotics.misc2019.Gamepad.Button;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,18 +26,29 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-    VelcroHatch hatch;
-    double armPower;
+
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
-    DriveBase driveBase;
 
+    DriveBase driveBase;
+    VelcroHatch velcroHatch;
+    ExpanderHatch expanderHatch;
+
+    AimingLights aimingLights;
+    Timer timer;
+
+    double armPower;
     double driveLeftCommand;
     double driveRightCommand;
 
-    Timer timer;
-
+    // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
+
+    // These are for the Expander Hatch mechanism.
+    boolean reacherButtonPressed = false;
+    boolean grabberButtonPressed = false;
+
+    private final boolean usingVelcroHatch = true;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -44,13 +56,20 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        hatch = new VelcroHatch(2, 1);
         driverLeft = new EnhancedJoystick(0);
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
+        
+        // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
-
+        velcroHatch = new VelcroHatch(2, 1);
+        expanderHatch = new ExpanderHatch(3, 4);
+        
+        aimingLights = new AimingLights(0, 1);
         timer = new Timer();
+        
+        CameraServer.getInstance().startAutomaticCapture(0);
+        CameraServer.getInstance().startAutomaticCapture(1);
     }
 
     /**
@@ -64,32 +83,45 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
-        hatch.rotate(armPower);
-
-        // if B is pressed, deploy hatch pneumatics
-
         driveLeftCommand = driverLeft.getY();
         driveRightCommand = driverRight.getY();
-
-        if (manipulator.getButton(Button.B)) {
-            hatch.deploy(manipulator.getButton(Button.B));
-            deployButtonPressed = true;
-        } else {
-            if (deployButtonPressed) {
-                deployButtonPressed = false;
-
-                timer.reset();
-                timer.start();
+        
+        if (usingVelcroHatch) {
+            armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+            velcroHatch.rotate(armPower);
+        
+            if (manipulator.getButton(Button.B)) {
+                velcroHatch.deploy(manipulator.getButton(Button.B));
+                deployButtonPressed = true;
+            } else {
+                if (deployButtonPressed) {
+                    deployButtonPressed = false;
+        
+                    timer.reset();
+                    timer.start();
+                }
+                velcroHatch.deploy(false);
             }
-            hatch.deploy(false);
+            // Counts for .25 of a second
+            if (timer.get() > 0 && timer.get() < 0.25) {
+                driveLeftCommand = -1;
+                driveRightCommand = -1;
+            }
+        } else {
+            if (manipulator.getButton(Button.A) != reacherButtonPressed) {
+                reacherButtonPressed = manipulator.getButton(Button.A);
+                expanderHatch.reach(reacherButtonPressed);
+            }
+        
+            if (manipulator.getButton(Button.B) != grabberButtonPressed) {
+                grabberButtonPressed = manipulator.getButton(Button.B);
+                expanderHatch.grab(grabberButtonPressed);
+            }
         }
-        // Counts for .25 of a second
-        if (timer.get() > 0 && timer.get() < 0.25) {
-            driveLeftCommand = -1;
-            driveRightCommand = -1;
-        }
+
         driveBase.drive(driveLeftCommand, driveRightCommand);
+        
+        aimingLights.set(driverLeft.getRawButton(2));
     }
 
     @Override
