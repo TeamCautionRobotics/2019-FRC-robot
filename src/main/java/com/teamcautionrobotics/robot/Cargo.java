@@ -43,8 +43,12 @@ public class Cargo {
         intake(funnelRollerSetting.power);
     }
 
+    public void setFunnelRollerDeployer(boolean out) {
+        funnelRollerDeployer.set(out);
+    }
+
     public void toggleFunnelRoller() {
-        funnelRollerDeployer.set(!currentFunnelRollerState);
+        setFunnelRollerDeployer(!currentFunnelRollerState);
     }
 
     public void deployExitFlap(boolean goingUp) {
