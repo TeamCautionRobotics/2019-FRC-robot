@@ -11,6 +11,7 @@ import com.teamcautionrobotics.misc2019.EnhancedJoystick;
 import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
 import com.teamcautionrobotics.misc2019.Gamepad.Button;
+import com.teamcautionrobotics.robot.Cargo.CargoMoverSetting;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -26,13 +27,14 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-
+    
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
-
+    
     DriveBase driveBase;
     VelcroHatch velcroHatch;
     ExpanderHatch expanderHatch;
+    Cargo cargo;
 
     AimingLights aimingLights;
     Timer timer;
@@ -48,6 +50,7 @@ public class Robot extends TimedRobot {
     boolean reacherButtonPressed = false;
     boolean grabberButtonPressed = false;
 
+    boolean deployedFunnelRoller = false;
     boolean aimingLightsButtonPressed = false;
 
     private final boolean usingVelcroHatch = true;
@@ -66,6 +69,7 @@ public class Robot extends TimedRobot {
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
         velcroHatch = new VelcroHatch(2, 1);
         expanderHatch = new ExpanderHatch(3, 4);
+        cargo = new Cargo(3, 2, 3);
 
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
@@ -127,6 +131,21 @@ public class Robot extends TimedRobot {
             aimingLights.changeState();
         }
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
+        
+        if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
+            cargo.intake(CargoMoverSetting.THROUGH);
+        } else if (manipulator.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
+            cargo.intake(CargoMoverSetting.BACK);
+        } else {
+            cargo.intake(CargoMoverSetting.STOP);
+        }
+
+        if (deployedFunnelRoller != driverRight.getTrigger() && driverRight.getTrigger()) {
+            cargo.toggleFunnelRoller();
+        }
+        deployedFunnelRoller = driverRight.getTrigger();
+
+        cargo.deployExitFlap(driverLeft.getTrigger());
     }
 
     @Override
