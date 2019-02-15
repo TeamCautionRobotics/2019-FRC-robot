@@ -11,7 +11,7 @@ import com.teamcautionrobotics.misc2019.EnhancedJoystick;
 import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
 import com.teamcautionrobotics.misc2019.Gamepad.Button;
-import com.teamcautionrobotics.robot.Cargo.FunnelRollerSetting;
+import com.teamcautionrobotics.robot.Cargo.CargoMoverSetting;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
         driverRight = new EnhancedJoystick(1);
         manipulator = new Gamepad(2);
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
-        cargo = new Cargo(3, 4, 2, 3);
+        cargo = new Cargo(3, 2, 3);
 
         timer = new Timer();
     }
@@ -98,11 +98,11 @@ public class Robot extends TimedRobot {
         driveBase.drive(driveLeftCommand, driveRightCommand);
 
         if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
-            cargo.intake(FunnelRollerSetting.THROUGH);
+            cargo.intake(CargoMoverSetting.THROUGH);
         } else if (manipulator.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
-            cargo.intake(FunnelRollerSetting.BACK);
+            cargo.intake(CargoMoverSetting.BACK);
         } else {
-            cargo.intake(FunnelRollerSetting.STOP);
+            cargo.intake(CargoMoverSetting.STOP);
         }
 
         cargo.deployExitFlap(driverLeft.getTrigger());
