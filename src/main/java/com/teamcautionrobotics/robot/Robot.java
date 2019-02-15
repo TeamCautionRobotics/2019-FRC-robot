@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
             } else {
                 if (deployButtonPressed) {
                     deployButtonPressed = false;
-    
+
                     timer.reset();
                     timer.start();
                 }
@@ -124,7 +124,7 @@ public class Robot extends TimedRobot {
                 expanderHatch.grab(grabberButtonPressed);
             }
         }
-        
+
         driveBase.drive(driveLeftCommand, driveRightCommand);
     }
 

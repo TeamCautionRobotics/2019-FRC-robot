@@ -3,8 +3,8 @@ package com.teamcautionrobotics.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 
-public class ExpanderHatch{
-    
+public class ExpanderHatch {
+
     // pneumatics objects
     // reacher extends away from the robot
     // grabber piston applies friction to the hatch by expanding
