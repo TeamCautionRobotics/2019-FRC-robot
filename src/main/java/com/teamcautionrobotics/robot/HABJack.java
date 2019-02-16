@@ -9,7 +9,7 @@ public class HABJack {
     // true if propping up
     private boolean currentState;
 
-    public HABJack(int leftJackPort,int rightJackPort) {
+    public HABJack(int leftJackPort, int rightJackPort) {
         leftJack = new Solenoid(leftJackPort);
         rightJack = new Solenoid(rightJackPort);
     }

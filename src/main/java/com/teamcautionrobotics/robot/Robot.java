@@ -27,10 +27,10 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-    
+
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
-    
+
     DriveBase driveBase;
     VelcroHatch velcroHatch;
     ExpanderHatch expanderHatch;
@@ -134,7 +134,7 @@ public class Robot extends TimedRobot {
         if (driverLeft.getRawButton(2) != aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
             aimingLights.changeState();
         }
-        
+
         if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
             cargo.intake(CargoMoverSetting.THROUGH);
         } else if (manipulator.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
@@ -142,12 +142,12 @@ public class Robot extends TimedRobot {
         } else {
             cargo.intake(CargoMoverSetting.STOP);
         }
-        
+
         if (deployedFunnelRoller != driverRight.getTrigger() && driverRight.getTrigger()) {
             cargo.toggleFunnelRoller();
         }
         deployedFunnelRoller = driverRight.getTrigger();
-        
+
         cargo.deployExitFlap(driverLeft.getTrigger());
 
         if (jackButtonPressed != manipulator.getButton(Button.X) && manipulator.getButton(Button.X)) {
