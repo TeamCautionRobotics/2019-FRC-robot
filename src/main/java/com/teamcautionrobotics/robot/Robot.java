@@ -14,7 +14,7 @@ import com.teamcautionrobotics.misc2019.Gamepad.Button;
 import com.teamcautionrobotics.robot.Cargo.CargoMoverSetting;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
