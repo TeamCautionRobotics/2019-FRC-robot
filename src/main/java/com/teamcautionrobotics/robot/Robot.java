@@ -48,10 +48,10 @@ public class Robot extends TimedRobot {
      * 
      * Driver controls:
      * 
-     * Left joystick, basic tank drive: Button 1, Cargo deploy exit fflap;
+     * Left joystick: X axis, robot turn control; Button 1, Cargo deploy exit flap;
      * Button 2, Toggle aiming lights
      * 
-     * Right Joystick: - 1 - Line following
+     * Right Joystick: Y axis, robot forward and backward control.
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller
      * (cargo mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB;
@@ -134,8 +134,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        driveLeftCommand = driverLeft.getY();
-        driveRightCommand = driverRight.getY();
+        double forwardCommand = -driverRight.getY();
+        double turnCommand = driverLeft.getX();
+        double driveLeftCommand = forwardCommand + turnCommand;
+        double driveRightCommand = forwardCommand - turnCommand;
 
         if (usingVelcroHatch) {
             double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
