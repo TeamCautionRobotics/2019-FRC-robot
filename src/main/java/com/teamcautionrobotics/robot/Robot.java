@@ -90,19 +90,15 @@ public class Robot extends TimedRobot {
             double armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
-            if (manipulator.getButton(Button.B)) {
-                velcroHatch.deploy(manipulator.getButton(Button.B));
-                deployButtonPressed = true;
-            } else {
-                if (deployButtonPressed) {
-                    deployButtonPressed = false;
-
-                    timer.reset();
-                    timer.start();
-                }
-                velcroHatch.deploy(false);
+            // Start the driveback timer when the deploy button is released
+            if (!manipulator.getButton(Button.B) && deployButtonPressed) {
+                timer.reset();
+                timer.start();
             }
-            // Counts for .25 of a second
+            deployButtonPressed = manipulator.getButton(Button.B);
+            velcroHatch.deploy(deployButtonPressed);
+
+            // Drive backwards after the deploy button is released
             if (timer.get() > 0 && timer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
                 driveLeftCommand = -1;
                 driveRightCommand = -1;
