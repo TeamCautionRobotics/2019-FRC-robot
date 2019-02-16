@@ -58,7 +58,8 @@ public class Robot extends TimedRobot {
      * Expand expander hatch mech - Lift bumper - Extend expander hatch mech past
      * bumper zone
      *
-     * All pneumatics are toggles.
+     * All pneumatics are toggles except for the velcro hatch deployer and the cargo
+     * exit flap
      */
 
     EnhancedJoystick driverLeft, driverRight;
@@ -133,7 +134,8 @@ public class Robot extends TimedRobot {
         driveRightCommand = driverRight.getY();
 
         if (usingVelcroHatch) {
-            double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER : VELCRO_HATCH_ARM_DOWN_POWER;                
+            double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
+                    : VELCRO_HATCH_ARM_DOWN_POWER;
             armPower = VELCRO_HATCH_ARM_PASSIVE_POWER + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
@@ -155,15 +157,17 @@ public class Robot extends TimedRobot {
                 driveRightCommand = -1;
             }
         } else {
-            if (manipulator.getButton(Button.LEFT_BUMPER) != reacherButtonPressed) {
-                reacherButtonPressed = manipulator.getButton(Button.A);
-                expanderHatch.reach(reacherButtonPressed);
+            if (reacherButtonPressed != manipulator.getButton(Button.LEFT_BUMPER)
+                    && manipulator.getButton(Button.LEFT_BUMPER)) {
+                expanderHatch.switchReacherState();
             }
+            reacherButtonPressed = manipulator.getButton(Button.LEFT_BUMPER);
 
-            if (manipulator.getButton(Button.RIGHT_BUMPER) != grabberButtonPressed) {
-                grabberButtonPressed = manipulator.getButton(Button.B);
-                expanderHatch.grab(grabberButtonPressed);
+            if (grabberButtonPressed != manipulator.getButton(Button.RIGHT_BUMPER)
+                    && manipulator.getButton(Button.RIGHT_BUMPER)) {
+                expanderHatch.switchGrabberState();
             }
+            grabberButtonPressed = manipulator.getButton(Button.B);
         }
 
         driveBase.drive(driveLeftCommand, driveRightCommand);

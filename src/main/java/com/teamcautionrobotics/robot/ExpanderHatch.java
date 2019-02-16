@@ -11,6 +11,10 @@ public class ExpanderHatch {
     private final Solenoid reacher;
     private final Solenoid grabber;
 
+    // true is out
+    private boolean reacherState;
+    private boolean grabberState;
+
     public ExpanderHatch(int reacherPort, int grabberPort) {
         reacher = new Solenoid(reacherPort);
         grabber = new Solenoid(grabberPort);
@@ -18,9 +22,19 @@ public class ExpanderHatch {
 
     public void reach(boolean out) {
         reacher.set(out);
+        reacherState = out;
+    }
+
+    public void switchReacherState() {
+        reach(!reacherState);
     }
 
     public void grab(boolean out) {
         grabber.set(out);
+        grabberState = out;
+    }
+
+    public void switchGrabberState() {
+        grab(!grabberState);
     }
 }
