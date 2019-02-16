@@ -27,14 +27,15 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-    
+
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
-    
+
     DriveBase driveBase;
     VelcroHatch velcroHatch;
     ExpanderHatch expanderHatch;
     Cargo cargo;
+    HABJack habJack;
 
     AimingLights aimingLights;
     Timer timer;
@@ -53,6 +54,8 @@ public class Robot extends TimedRobot {
     boolean deployedFunnelRoller = false;
     boolean aimingLightsButtonPressed = false;
 
+    boolean jackButtonPressed = false;
+
     private final boolean usingVelcroHatch = true;
 
     /**
@@ -68,8 +71,9 @@ public class Robot extends TimedRobot {
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
         velcroHatch = new VelcroHatch(2, 1);
-        expanderHatch = new ExpanderHatch(3, 4);
+        expanderHatch = new ExpanderHatch(4, 5);
         cargo = new Cargo(3, 2, 3);
+        habJack = new HABJack(6, 7);
 
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
@@ -130,8 +134,7 @@ public class Robot extends TimedRobot {
         if (driverLeft.getRawButton(2) != aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
             aimingLights.changeState();
         }
-        aimingLightsButtonPressed = driverLeft.getRawButton(2);
-        
+
         if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
             cargo.intake(CargoMoverSetting.THROUGH);
         } else if (manipulator.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
@@ -146,6 +149,13 @@ public class Robot extends TimedRobot {
         deployedFunnelRoller = driverRight.getTrigger();
 
         cargo.deployExitFlap(driverLeft.getTrigger());
+
+        if (jackButtonPressed != manipulator.getButton(Button.X) && manipulator.getButton(Button.X)) {
+            habJack.switchState();
+        }
+        jackButtonPressed = manipulator.getButton(Button.X);
+
+        aimingLightsButtonPressed = driverLeft.getRawButton(2);
     }
 
     @Override
