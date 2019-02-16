@@ -27,6 +27,40 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
+    /*
+     * RoboRIO ports:
+     * 
+     * PWM: 0, Left drive; 1, Right drive; 2, Hatch / Winch, 3 Cargo mechanism
+     * 
+     * DIO: 0, left drive encoder A; 1, left drive encoder B;
+     * 2, right drive encoder A; 3, right drive encoder B;
+     * 4, 5, 6, line following (left, right, and back, respectively);
+     * 7, limit switch for Velcro hatch mechanism
+     * 
+     * Relay: 0, horizontal light; 1, downward light
+     * 
+     * Pneumatic Control Module: 0, Left jack; 1, Right jack; 2, Expander hatch 
+     * reacher (away from the robot); 3, Expander hatch grabber (applies friction
+     * on the hatch); 4, Cargo Exit Flap; 5, Cargo Funnel Deployer (deploys the 
+     * nice-to-have wheels); 6, 7, 8, Velcro hatch deployers (left,
+     * right, respectively)
+     *
+     * 
+     * Driver controls:
+     * 
+     * Left joystick: X axis, robot turn control; Button 1, Cargo deploy exit flap;
+     * Button 2, Toggle aiming lights
+     * 
+     * Right Joystick: Y axis, robot forward and backward control.
+     * 
+     * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller
+     * (cargo mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB;
+     * Right trigger, Cargo; Left trigger, Cargo reverse; Right bumper, Expand
+     * expander hatch mech; Lfft bumper, Extend expander hatch mech past bumper zone
+     *
+     * All pneumatics are toggles except for the velcro hatch deployer and the cargo
+     * exit flap.
+     */
 
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
@@ -58,6 +92,13 @@ public class Robot extends TimedRobot {
 
     private final boolean usingVelcroHatch = true;
 
+    // Passive power to hold the velcro arm in position
+    private final double VELCRO_HATCH_ARM_PASSIVE_POWER = 0.00;
+
+    // Scaling factors for the arm power based on its direction of movement
+    private final double VELCRO_HATCH_ARM_UP_POWER = 1.0;
+    private final double VELCRO_HATCH_ARM_DOWN_POWER = -0.25;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -70,10 +111,10 @@ public class Robot extends TimedRobot {
 
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
-        velcroHatch = new VelcroHatch(2, 1);
-        expanderHatch = new ExpanderHatch(4, 5);
-        cargo = new Cargo(3, 2, 3);
-        habJack = new HABJack(6, 7);
+        velcroHatch = new VelcroHatch(2, 6, 7, 8);
+        expanderHatch = new ExpanderHatch(2, 3);
+        cargo = new Cargo(3, 4, 5);
+        habJack = new HABJack(0, 1);
 
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
@@ -93,11 +134,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        driveLeftCommand = driverLeft.getY();
-        driveRightCommand = driverRight.getY();
+        double forwardCommand = -driverRight.getY();
+        double turnCommand = driverLeft.getX();
+        double driveLeftCommand = forwardCommand + turnCommand;
+        double driveRightCommand = forwardCommand - turnCommand;
 
         if (usingVelcroHatch) {
-            armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+            double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
+                    : VELCRO_HATCH_ARM_DOWN_POWER;
+            armPower = VELCRO_HATCH_ARM_PASSIVE_POWER + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
             if (manipulator.getButton(Button.B)) {
@@ -118,15 +163,17 @@ public class Robot extends TimedRobot {
                 driveRightCommand = -1;
             }
         } else {
-            if (manipulator.getButton(Button.A) != reacherButtonPressed) {
-                reacherButtonPressed = manipulator.getButton(Button.A);
-                expanderHatch.reach(reacherButtonPressed);
+            if (reacherButtonPressed != manipulator.getButton(Button.LEFT_BUMPER)
+                    && manipulator.getButton(Button.LEFT_BUMPER)) {
+                expanderHatch.switchReacherState();
             }
+            reacherButtonPressed = manipulator.getButton(Button.LEFT_BUMPER);
 
-            if (manipulator.getButton(Button.B) != grabberButtonPressed) {
-                grabberButtonPressed = manipulator.getButton(Button.B);
-                expanderHatch.grab(grabberButtonPressed);
+            if (grabberButtonPressed != manipulator.getButton(Button.RIGHT_BUMPER)
+                    && manipulator.getButton(Button.RIGHT_BUMPER)) {
+                expanderHatch.switchGrabberState();
             }
+            grabberButtonPressed = manipulator.getButton(Button.B);
         }
 
         driveBase.drive(driveLeftCommand, driveRightCommand);
@@ -143,10 +190,10 @@ public class Robot extends TimedRobot {
             cargo.intake(CargoMoverSetting.STOP);
         }
 
-        if (deployedFunnelRoller != driverRight.getTrigger() && driverRight.getTrigger()) {
+        if (deployedFunnelRoller != manipulator.getButton(Button.A) && manipulator.getButton(Button.A)) {
             cargo.toggleFunnelRoller();
         }
-        deployedFunnelRoller = driverRight.getTrigger();
+        deployedFunnelRoller = manipulator.getButton(Button.A);
 
         cargo.deployExitFlap(driverLeft.getTrigger());
 
