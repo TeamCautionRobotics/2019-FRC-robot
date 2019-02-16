@@ -70,10 +70,10 @@ public class Robot extends TimedRobot {
 
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
-        velcroHatch = new VelcroHatch(2, 1);
-        expanderHatch = new ExpanderHatch(4, 5);
-        cargo = new Cargo(3, 2, 3);
-        habJack = new HABJack(6, 7);
+        velcroHatch = new VelcroHatch(2, 2);
+        expanderHatch = new ExpanderHatch(3, 4);
+        cargo = new Cargo(3, 5, 6);
+        habJack = new HABJack(0, 1);
 
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
