@@ -40,10 +40,10 @@ public class Robot extends TimedRobot {
      * Relay: 0, horizontal light; 1, downward light
      * 
      * Pneumatic Control Module: 0, Left jack; 1, Right jack;
-     * 2, Expander hatch reacher (away from the robot);
-     * 3, Expander hatch grabber (applies friction on the hatch);
-     * 4, Cargo Exit Flap; 5, Cargo Funnel Deployer (deploys the nice-to-have wheels);
-     * 5, 6, 7 Velcro hatch deployers (left, right, respectively)
+     * 2, Cargo Exit Flap; 3 Cargo Funnel Deployer (deploys the nice-to-have wheels);
+     * 4, Expander hatch reacher (away from the robot);
+     * 5, Expander hatch grabber (applies friction on the hatch);
+     * 4, 5, 6 Velcro hatch deployers (left, right, respectively)
      *
      * 
      * Driver controls:
@@ -111,10 +111,13 @@ public class Robot extends TimedRobot {
 
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
-        velcroHatch = new VelcroHatch(2, 5, 6, 7);
-        expanderHatch = new ExpanderHatch(2, 3);
-        cargo = new Cargo(3, 4, 5);
         habJack = new HABJack(0, 1);
+        cargo = new Cargo(2, 3, 5);
+        if (usingVelcroHatch) {
+            velcroHatch = new VelcroHatch(2, 4, 5, 5);
+        } else {
+            expanderHatch = new ExpanderHatch(4, 5);
+        }
 
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
