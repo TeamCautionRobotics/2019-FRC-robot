@@ -31,10 +31,6 @@ public class Robot extends TimedRobot {
     AimingLights aimingLights;
     Timer timer;
 
-    double armPower;
-    double driveLeftCommand;
-    double driveRightCommand;
-
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
 
@@ -87,11 +83,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        driveLeftCommand = driverLeft.getY();
-        driveRightCommand = driverRight.getY();
+        double driveLeftCommand = driverLeft.getY();
+        double driveRightCommand = driverRight.getY();
 
         if (USING_VELCRO_HATCH) {
-            armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+            double armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
             if (manipulator.getButton(Button.B)) {
