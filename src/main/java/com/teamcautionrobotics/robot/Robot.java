@@ -90,6 +90,9 @@ public class Robot extends TimedRobot {
     boolean jackButtonPressed = false;
 
     private final boolean usingVelcroHatch = true;
+    private final double VELCRO_HATCH_ARM_PASSIVE_POWER = 0.05;
+    private final double VELCRO_HATCH_ARM_UP_POWER = 1.0;
+    private final double VELCRO_HATCH_ARM_DOWN_POWER = -0.25;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -130,7 +133,8 @@ public class Robot extends TimedRobot {
         driveRightCommand = driverRight.getY();
 
         if (usingVelcroHatch) {
-            armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
+            double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER : VELCRO_HATCH_ARM_DOWN_POWER;                
+            armPower = VELCRO_HATCH_ARM_PASSIVE_POWER + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
             if (manipulator.getButton(Button.B)) {
