@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
      * bumper zone
      *
      * All pneumatics are toggles except for the velcro hatch deployer and the cargo
-     * exit flap
+     * exit flap.
      */
 
     EnhancedJoystick driverLeft, driverRight;
