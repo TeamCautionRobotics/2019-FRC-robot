@@ -91,7 +91,11 @@ public class Robot extends TimedRobot {
     boolean jackButtonPressed = false;
 
     private final boolean usingVelcroHatch = true;
+
+    // Passive power to hold the velcro arm in position
     private final double VELCRO_HATCH_ARM_PASSIVE_POWER = 0.05;
+
+    // Scaling factors for the arm power based on its direction of movement
     private final double VELCRO_HATCH_ARM_UP_POWER = 1.0;
     private final double VELCRO_HATCH_ARM_DOWN_POWER = -0.25;
 
