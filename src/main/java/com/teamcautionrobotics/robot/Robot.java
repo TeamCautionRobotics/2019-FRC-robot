@@ -49,6 +49,9 @@ public class Robot extends TimedRobot {
 
     private final boolean USING_VELCRO_HATCH = true;
 
+    // Time the robot should drive backwards for after deploying the hatch
+    private final double HATCH_DEPLOY_DRIVEBACK_TIME = 0.25;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -104,7 +107,7 @@ public class Robot extends TimedRobot {
                 velcroHatch.deploy(false);
             }
             // Counts for .25 of a second
-            if (timer.get() > 0 && timer.get() < 0.25) {
+            if (timer.get() > 0 && timer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
                 driveLeftCommand = -1;
                 driveRightCommand = -1;
             }
