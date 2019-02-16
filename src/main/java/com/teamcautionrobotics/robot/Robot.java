@@ -42,10 +42,10 @@ public class Robot extends TimedRobot {
     boolean reacherButtonPressed = false;
     boolean grabberButtonPressed = false;
 
+    boolean jackButtonPressed = false;
+
     boolean deployedFunnelRoller = false;
     boolean aimingLightsButtonPressed = false;
-
-    boolean jackButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = true;
 
