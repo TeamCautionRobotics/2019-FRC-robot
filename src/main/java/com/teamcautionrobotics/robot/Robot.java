@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
 
     boolean jackButtonPressed = false;
 
-    private final boolean usingVelcroHatch = true;
+    private final boolean USING_VELCRO_HATCH = true;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
         driveLeftCommand = driverLeft.getY();
         driveRightCommand = driverRight.getY();
 
-        if (usingVelcroHatch) {
+        if (USING_VELCRO_HATCH) {
             armPower = .5 + .5 * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
