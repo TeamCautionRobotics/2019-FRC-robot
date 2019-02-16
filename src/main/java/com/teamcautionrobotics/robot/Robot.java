@@ -17,13 +17,6 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
 
     EnhancedJoystick driverLeft, driverRight;
@@ -156,28 +149,17 @@ public class Robot extends TimedRobot {
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
     }
 
+    // Empty methods to keep the robot's runtime from emitting messages about
+    // unoverridden methods.
     @Override
-    public void autonomousInit() {
-    }
+    public void autonomousInit() {}
 
-    /**
-     * This function is called periodically during autonomous.
-     */
     @Override
-    public void autonomousPeriodic() {
-    }
+    public void autonomousPeriodic() {}
 
-    /**
-     * This function is called periodically during operator control.
-     */
     @Override
-    public void teleopPeriodic() {
-    }
+    public void teleopPeriodic() {}
 
-    /**
-     * This function is called periodically during test mode.
-     */
     @Override
-    public void testPeriodic() {
-    }
+    public void testPeriodic() {}
 }
