@@ -47,13 +47,18 @@ public class Robot extends TimedRobot {
      * 
      * Driver controls:
      * 
-     * Left joystick, basic tank drive: - 1 - Cargo Aiming Piston - 2 - Aiming
+     * Left joystick, basic tank drive: - 1 - Cargo Deploy Exit Flap - 2 - Aiming
      * Lights
      * 
      * Right Joystick: - 1 - Line following
      * 
-     * Gamepad: - Left thumbstick - Rotate hatch arm - B - Deploy hatch - X - Jack
-     * for HAB - Right trigger - Cargo - Left trigger - Cargo reverse
+     * Gamepad: - Left thumbstick - Rotate hatch arm - A - Deploy funnel roller
+     * (cargo mechanism extender) - B - Deploy hatch (velcro mech) - X - Jack for
+     * HAB - Right trigger - Cargo - Left trigger - Cargo reverse - Right bumper -
+     * Expand expander hatch mech - Lift bumper - Extend expander hatch mech past
+     * bumper zone
+     *
+     * All pneumatics are toggles.
      */
 
     EnhancedJoystick driverLeft, driverRight;
@@ -146,12 +151,12 @@ public class Robot extends TimedRobot {
                 driveRightCommand = -1;
             }
         } else {
-            if (manipulator.getButton(Button.A) != reacherButtonPressed) {
+            if (manipulator.getButton(Button.LEFT_BUMPER) != reacherButtonPressed) {
                 reacherButtonPressed = manipulator.getButton(Button.A);
                 expanderHatch.reach(reacherButtonPressed);
             }
 
-            if (manipulator.getButton(Button.B) != grabberButtonPressed) {
+            if (manipulator.getButton(Button.RIGHT_BUMPER) != grabberButtonPressed) {
                 grabberButtonPressed = manipulator.getButton(Button.B);
                 expanderHatch.grab(grabberButtonPressed);
             }
@@ -171,10 +176,10 @@ public class Robot extends TimedRobot {
             cargo.intake(CargoMoverSetting.STOP);
         }
 
-        if (deployedFunnelRoller != driverRight.getTrigger() && driverRight.getTrigger()) {
+        if (deployedFunnelRoller != manipulator.getButton(Button.A) && manipulator.getButton(Button.A)) {
             cargo.toggleFunnelRoller();
         }
-        deployedFunnelRoller = driverRight.getTrigger();
+        deployedFunnelRoller = manipulator.getButton(Button.A);
 
         cargo.deployExitFlap(driverLeft.getTrigger());
 
