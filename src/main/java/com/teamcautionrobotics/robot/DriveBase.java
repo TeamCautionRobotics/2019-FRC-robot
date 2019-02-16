@@ -123,8 +123,7 @@ public class DriveBase {
 
     private class DriveBasePIDOutput implements PIDOutput {
 
-        private DriveBasePIDOutput() {
-        }
+        private DriveBasePIDOutput() {}
 
         @Override
         public void pidWrite(double speed) {
