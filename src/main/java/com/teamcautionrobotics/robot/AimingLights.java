@@ -27,7 +27,7 @@ public class AimingLights {
       currentSetting = on;
    }
 
-   public void changeState() {
+   public void toggleState() {
       set(!currentSetting);
    }
 }

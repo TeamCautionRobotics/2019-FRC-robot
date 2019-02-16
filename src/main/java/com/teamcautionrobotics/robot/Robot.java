@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
         driveBase.drive(driveLeftCommand, driveRightCommand);
 
         if (driverLeft.getRawButton(2) != aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
-            aimingLights.changeState();
+            aimingLights.toggleState();
         }
 
         if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
