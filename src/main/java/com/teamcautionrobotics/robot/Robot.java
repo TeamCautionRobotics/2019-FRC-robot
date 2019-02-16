@@ -27,6 +27,34 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
+    /*
+     * RoboRIO ports:
+     * 
+     * PWM: - 0 - Left drive - 1 - Right drive - 2 - Hatch / Winch - 3 - Cargo
+     * mechanism
+     * 
+     * DIO: - 0 - left drive A - 1 - Left drive B - 2 - right drive A - 3 - right
+     * drive B - 4, 5, 6 - line following (left, right, and back, respectively) - 7
+     * - limit switch for Velcro hatch mechanism
+     * 
+     * Relay: - 0 - horizontal light - 1 - downward light
+     * 
+     * Pneumatic Control Module: - 0 - Left jack - 1 - Right jack - 2 - Velcro hatch
+     * deployer - 3 - Expander hatch reacher (away from the robot) - 4 - Expander
+     * hatch grabber (applies friction on the hatch) - 5 - Cargo Exit Flap - 6 -
+     * Cargo Funnel Deployer (deploys the nice-to-have wheels)
+     *
+     * 
+     * Driver controls:
+     * 
+     * Left joystick, basic tank drive: - 1 - Cargo Aiming Piston - 2 - Aiming
+     * Lights
+     * 
+     * Right Joystick: - 1 - Line following
+     * 
+     * Gamepad: - Left thumbstick - Rotate hatch arm - B - Deploy hatch - X - Jack
+     * for HAB - Right trigger - Cargo - Left trigger - Cargo reverse
+     */
 
     EnhancedJoystick driverLeft, driverRight;
     Gamepad manipulator;
