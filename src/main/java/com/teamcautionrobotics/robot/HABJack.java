@@ -3,6 +3,7 @@ package com.teamcautionrobotics.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class HABJack {
+
     private final Solenoid leftJack;
     private final Solenoid rightJack;
 

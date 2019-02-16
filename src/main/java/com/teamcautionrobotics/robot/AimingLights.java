@@ -1,9 +1,9 @@
-
 package com.teamcautionrobotics.robot;
 
 import edu.wpi.first.wpilibj.Relay;
 
 public class AimingLights {
+
    private final Relay FlashlightRelay1;
    private final Relay FlashlightRelay2;
 

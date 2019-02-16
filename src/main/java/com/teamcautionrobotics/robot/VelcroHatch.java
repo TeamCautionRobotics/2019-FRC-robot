@@ -1,10 +1,10 @@
-
 package com.teamcautionrobotics.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 
 public class VelcroHatch {
+
     // motor object
     private VictorSP winch;
     // pneumatics object
