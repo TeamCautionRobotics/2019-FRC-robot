@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -28,6 +29,19 @@ public class DriveBase {
 
     public PIDController pidController;
     public final DriveBasePIDOutput pidOutput;
+
+    private double lastLeftPower;
+    private double leftInputDerivative;
+
+    private double lastRightPower;
+    private double rightInputDerivative;
+
+    // Change in time
+    private final double dt = TimedRobot.kDefaultPeriod;
+
+    // This value is the derivative of the input power, which is only proportional
+    // to the actual jerk of the robot in m/s^3
+    private final double JERK_LIMIT = 1;
 
     public DriveBase(int left, int right, int leftA, int leftB, int rightA, int rightB) {
         driveLeft = new VictorSP(left);
@@ -59,6 +73,38 @@ public class DriveBase {
 
     public void drive(double speed) {
         drive(speed, speed);
+    }
+
+    public void driveSmoothly(double leftInput, double rightInput) {
+        updateDerivatives(leftInput, rightInput);
+        double leftPower = leftInput;
+        double rightPower = rightInput;
+
+        // limit jerk for each side if predicted jerk is too high
+        if (leftInputDerivative > JERK_LIMIT) {
+            leftPower = limitJerk(leftInput, lastLeftPower);
+        }
+
+        if (rightInputDerivative > JERK_LIMIT) {
+            rightPower = limitJerk(rightInput, lastRightPower);
+        }
+        drive(leftPower, rightPower);
+
+        lastLeftPower = leftPower;
+        lastRightPower = rightPower;
+    }
+
+    private void updateDerivatives(double leftInput, double rightInput) {
+        leftInputDerivative = (leftInput - lastLeftPower) / dt;
+        rightInputDerivative = (rightInput - lastRightPower) / dt;
+    }
+
+    // make the actual jerk = the threshold
+    private double limitJerk(double input, double lastPower) {
+        // change in input
+        double di = dt * JERK_LIMIT;
+        double desiredInput = lastPower + di;
+        return desiredInput;
     }
 
     public void resetGyro() {
@@ -123,7 +169,8 @@ public class DriveBase {
 
     private class DriveBasePIDOutput implements PIDOutput {
 
-        private DriveBasePIDOutput() {}
+        private DriveBasePIDOutput() {
+        }
 
         @Override
         public void pidWrite(double speed) {
