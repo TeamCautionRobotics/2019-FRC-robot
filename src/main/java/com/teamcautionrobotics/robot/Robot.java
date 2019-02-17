@@ -168,9 +168,9 @@ public class Robot extends TimedRobot {
             aimingLights.toggleState();
         }
 
-        if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
+        if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
             cargo.intake(CargoMoverSetting.THROUGH);
-        } else if (manipulator.getAxis(Axis.LEFT_TRIGGER) > 0.5) {
+        } else if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER)) {
             cargo.intake(CargoMoverSetting.BACK);
         } else {
             cargo.intake(CargoMoverSetting.STOP);

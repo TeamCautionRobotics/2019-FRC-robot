@@ -18,6 +18,10 @@ public class Gamepad extends EnhancedJoystick {
         return getRawButton(button.ordinal() + 1);
     }
 
+    public boolean getAxisAsButton(Axis axis) {
+        return getAxis(axis) > 0.5;
+    }
+
     public enum Axis {
         LEFT_X, LEFT_Y, LEFT_TRIGGER, RIGHT_TRIGGER, RIGHT_X, RIGHT_Y
     }
