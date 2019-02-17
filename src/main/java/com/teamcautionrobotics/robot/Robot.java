@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
         cargo.deployExitFlap(driverLeft.getTrigger());
 
         if (!jackButtonPressed && manipulator.getButton(Button.X)) {
-            habJack.switchState();
+            habJack.toggleJack();
         }
         jackButtonPressed = manipulator.getButton(Button.X);
 

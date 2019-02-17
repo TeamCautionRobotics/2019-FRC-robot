@@ -15,13 +15,13 @@ public class HABJack {
         rightJack = new Solenoid(rightJackPort);
     }
 
-    public void jack(boolean up) {
+    public void setJack(boolean up) {
         leftJack.set(up);
         rightJack.set(up);
         currentState = up;
     }
 
-    public void switchState() {
-        jack(!currentState);
+    public void toggleJack() {
+        setJack(!currentState);
     }
 }
