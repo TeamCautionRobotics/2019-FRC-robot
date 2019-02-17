@@ -162,7 +162,7 @@ public class Robot extends TimedRobot {
             grabberButtonPressed = manipulator.getButton(Button.B);
         }
 
-        driveBase.drive(driveLeftCommand, driveRightCommand);
+        driveBase.driveSmoothly(driveLeftCommand, driveRightCommand);
 
         if (!driverLeft.getRawButton(2) && driverLeft.getRawButton(2)) {
             aimingLights.toggleState();
