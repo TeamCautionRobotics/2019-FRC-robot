@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveBase {
 
-    private VictorSP driveLeft;
-    private VictorSP driveRight;
+    private final VictorSP driveLeft;
+    private final VictorSP driveRight;
 
-    private Encoder leftEncoder;
-    private Encoder rightEncoder;
+    private final Encoder leftEncoder;
+    private final Encoder rightEncoder;
 
-    private ADXRS450_Gyro gyro;
+    private final ADXRS450_Gyro gyro;
 
     private boolean useLeftEncoder = false;
 
@@ -123,8 +123,7 @@ public class DriveBase {
 
     private class DriveBasePIDOutput implements PIDOutput {
 
-        private DriveBasePIDOutput() {
-        }
+        private DriveBasePIDOutput() {}
 
         @Override
         public void pidWrite(double speed) {

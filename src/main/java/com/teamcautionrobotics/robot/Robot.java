@@ -13,19 +13,10 @@ import com.teamcautionrobotics.misc2019.Gamepad.Axis;
 import com.teamcautionrobotics.misc2019.Gamepad.Button;
 import com.teamcautionrobotics.robot.Cargo.CargoMoverSetting;
 
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
     /*
      * RoboRIO ports:
@@ -74,10 +65,6 @@ public class Robot extends TimedRobot {
     AimingLights aimingLights;
     Timer timer;
 
-    double armPower;
-    double driveLeftCommand;
-    double driveRightCommand;
-
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
 
@@ -85,12 +72,15 @@ public class Robot extends TimedRobot {
     boolean reacherButtonPressed = false;
     boolean grabberButtonPressed = false;
 
+    boolean jackButtonPressed = false;
+
     boolean deployedFunnelRoller = false;
     boolean aimingLightsButtonPressed = false;
 
-    boolean jackButtonPressed = false;
+    private final boolean USING_VELCRO_HATCH = true;
 
-    private final boolean usingVelcroHatch = true;
+    // Time the robot should drive backwards for after deploying the hatch
+    private final double HATCH_DEPLOY_DRIVEBACK_TIME = 0.25;
 
     // Passive power to hold the velcro arm in position
     private final double VELCRO_HATCH_ARM_PASSIVE_POWER = 0.00;
@@ -113,7 +103,7 @@ public class Robot extends TimedRobot {
         driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
         habJack = new HABJack(0, 1);
         cargo = new Cargo(3, 2, 3);
-        if (usingVelcroHatch) {
+        if (USING_VELCRO_HATCH) {
             velcroHatch = new VelcroHatch(2, 4, 5, 6);
         } else {
             expanderHatch = new ExpanderHatch(4, 5);
@@ -142,26 +132,22 @@ public class Robot extends TimedRobot {
         double driveLeftCommand = forwardCommand + turnCommand;
         double driveRightCommand = forwardCommand - turnCommand;
 
-        if (usingVelcroHatch) {
+        if (USING_VELCRO_HATCH) {
             double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
                     : VELCRO_HATCH_ARM_DOWN_POWER;
-            armPower = VELCRO_HATCH_ARM_PASSIVE_POWER + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
+            double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
-            if (manipulator.getButton(Button.B)) {
-                velcroHatch.deploy(manipulator.getButton(Button.B));
-                deployButtonPressed = true;
-            } else {
-                if (deployButtonPressed) {
-                    deployButtonPressed = false;
-
-                    timer.reset();
-                    timer.start();
-                }
-                velcroHatch.deploy(false);
+            // Start the driveback timer when the deploy button is released
+            if (!manipulator.getButton(Button.B) && deployButtonPressed) {
+                timer.reset();
+                timer.start();
             }
-            // Counts for .25 of a second
-            if (timer.get() > 0 && timer.get() < 0.25) {
+            deployButtonPressed = manipulator.getButton(Button.B);
+            velcroHatch.deploy(deployButtonPressed);
+
+            // Drive backwards after the deploy button is released
+            if (timer.get() > 0 && timer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
                 driveLeftCommand = -1;
                 driveRightCommand = -1;
             }
@@ -181,8 +167,8 @@ public class Robot extends TimedRobot {
 
         driveBase.drive(driveLeftCommand, driveRightCommand);
 
-        if (driverLeft.getRawButton(2) != aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
-            aimingLights.changeState();
+        if (!driverLeft.getRawButton(2) && driverLeft.getRawButton(2)) {
+            aimingLights.toggleState();
         }
 
         if (manipulator.getAxis(Axis.RIGHT_TRIGGER) > 0.5) {
@@ -193,43 +179,32 @@ public class Robot extends TimedRobot {
             cargo.intake(CargoMoverSetting.STOP);
         }
 
-        if (deployedFunnelRoller != manipulator.getButton(Button.A) && manipulator.getButton(Button.A)) {
+        if (!deployedFunnelRoller && manipulator.getButton(Button.A)) {
             cargo.toggleFunnelRoller();
         }
         deployedFunnelRoller = manipulator.getButton(Button.A);
 
         cargo.deployExitFlap(driverLeft.getTrigger());
 
-        if (jackButtonPressed != manipulator.getButton(Button.X) && manipulator.getButton(Button.X)) {
-            habJack.switchState();
+        if (!jackButtonPressed && manipulator.getButton(Button.X)) {
+            habJack.toggleJack();
         }
         jackButtonPressed = manipulator.getButton(Button.X);
 
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
     }
 
+    // Empty methods to keep the robot's runtime from emitting messages about
+    // unoverridden methods.
     @Override
-    public void autonomousInit() {
-    }
+    public void autonomousInit() {}
 
-    /**
-     * This function is called periodically during autonomous.
-     */
     @Override
-    public void autonomousPeriodic() {
-    }
+    public void autonomousPeriodic() {}
 
-    /**
-     * This function is called periodically during operator control.
-     */
     @Override
-    public void teleopPeriodic() {
-    }
+    public void teleopPeriodic() {}
 
-    /**
-     * This function is called periodically during test mode.
-     */
     @Override
-    public void testPeriodic() {
-    }
+    public void testPeriodic() {}
 }
