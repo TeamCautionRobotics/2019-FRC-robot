@@ -117,7 +117,7 @@ public class Robot extends TimedRobot {
 
         driveBase.drive(driveLeftCommand, driveRightCommand);
 
-        if (driverLeft.getRawButton(2) != aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
+        if (!driverLeft.getRawButton(2) && driverLeft.getRawButton(2)) {
             aimingLights.toggleState();
         }
 
@@ -129,14 +129,14 @@ public class Robot extends TimedRobot {
             cargo.intake(CargoMoverSetting.STOP);
         }
 
-        if (deployedFunnelRoller != driverRight.getTrigger() && driverRight.getTrigger()) {
+        if (!deployedFunnelRoller && driverRight.getTrigger()) {
             cargo.toggleFunnelRoller();
         }
         deployedFunnelRoller = driverRight.getTrigger();
 
         cargo.deployExitFlap(driverLeft.getTrigger());
 
-        if (jackButtonPressed != manipulator.getButton(Button.X) && manipulator.getButton(Button.X)) {
+        if (!jackButtonPressed && manipulator.getButton(Button.X)) {
             habJack.switchState();
         }
         jackButtonPressed = manipulator.getButton(Button.X);
