@@ -153,12 +153,12 @@ public class Robot extends TimedRobot {
             }
         } else {
             if (!reacherButtonPressed && manipulator.getButton(Button.LEFT_BUMPER)) {
-                expanderHatch.switchReacherState();
+                expanderHatch.toggleReacher();
             }
             reacherButtonPressed = manipulator.getButton(Button.LEFT_BUMPER);
 
             if (!grabberButtonPressed && manipulator.getButton(Button.RIGHT_BUMPER)) {
-                expanderHatch.switchGrabberState();
+                expanderHatch.toggleGrabber();
             }
             grabberButtonPressed = manipulator.getButton(Button.B);
         }

@@ -24,7 +24,7 @@ public class ExpanderHatch {
         reacherState = out;
     }
 
-    public void switchReacherState() {
+    public void toggleReacher() {
         reach(!reacherState);
     }
 
@@ -33,7 +33,7 @@ public class ExpanderHatch {
         grabberState = out;
     }
 
-    public void switchGrabberState() {
+    public void toggleGrabber() {
         grab(!grabberState);
     }
 }
