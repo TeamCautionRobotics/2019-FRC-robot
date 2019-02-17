@@ -23,18 +23,16 @@ public class Robot extends TimedRobot {
      * 
      * PWM: 0, Left drive; 1, Right drive; 2, Hatch / Winch, 3 Cargo mechanism
      * 
-     * DIO: 0, left drive encoder A; 1, left drive encoder B;
-     * 2, right drive encoder A; 3, right drive encoder B;
-     * 4, 5, 6, line following (left, right, and back, respectively);
-     * 7, limit switch for Velcro hatch mechanism
+     * DIO: 0, left drive encoder A; 1, left drive encoder B; 2, right drive encoder
+     * A; 3, right drive encoder B; 4, 5, 6, line following (left, right, and back,
+     * respectively); 7, limit switch for Velcro hatch mechanism
      * 
      * Relay: 0, horizontal light; 1, downward light
      * 
-     * Pneumatic Control Module: 0, Left jack; 1, Right jack;
-     * 2, Cargo Exit Flap; 3 Cargo Funnel Deployer (deploys the nice-to-have wheels);
-     * 4, Expander hatch reacher (away from the robot);
-     * 5, Expander hatch grabber (applies friction on the hatch);
-     * 4, 5, 6 Velcro hatch deployers (left, right, respectively)
+     * Pneumatic Control Module: 0, Left jack; 1, Right jack; 2, Cargo Exit Flap; 3
+     * Cargo Funnel Deployer (deploys the nice-to-have wheels); 4, Expander hatch
+     * reacher (away from the robot); 5, Expander hatch grabber (applies friction on
+     * the hatch); 4, 5, 6 Velcro hatch deployers (left, right, respectively)
      *
      * 
      * Driver controls:
@@ -44,10 +42,10 @@ public class Robot extends TimedRobot {
      * 
      * Right Joystick: Y axis, robot forward and backward control.
      * 
-     * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller
-     * (cargo mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB;
-     * Right trigger, Cargo; Left trigger, Cargo reverse; Right bumper, Expand
-     * expander hatch mech; Lfft bumper, Extend expander hatch mech past bumper zone
+     * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
+     * mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB; Right
+     * trigger, Cargo; Left trigger, Cargo reverse; Right bumper, Expand expander
+     * hatch mech; Lfft bumper, Extend expander hatch mech past bumper zone
      *
      * All pneumatics are toggles except for the velcro hatch deployer and the cargo
      * exit flap.
@@ -135,7 +133,8 @@ public class Robot extends TimedRobot {
         if (USING_VELCRO_HATCH) {
             double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
                     : VELCRO_HATCH_ARM_DOWN_POWER;
-            double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
+            double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER
+                    + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
             velcroHatch.rotate(armPower);
 
             // Start the driveback timer when the deploy button is released
