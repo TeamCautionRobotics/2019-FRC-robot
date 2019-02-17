@@ -152,14 +152,12 @@ public class Robot extends TimedRobot {
                 driveRightCommand = -1;
             }
         } else {
-            if (reacherButtonPressed != manipulator.getButton(Button.LEFT_BUMPER)
-                    && manipulator.getButton(Button.LEFT_BUMPER)) {
+            if (!reacherButtonPressed && manipulator.getButton(Button.LEFT_BUMPER)) {
                 expanderHatch.switchReacherState();
             }
             reacherButtonPressed = manipulator.getButton(Button.LEFT_BUMPER);
 
-            if (grabberButtonPressed != manipulator.getButton(Button.RIGHT_BUMPER)
-                    && manipulator.getButton(Button.RIGHT_BUMPER)) {
+            if (!grabberButtonPressed && manipulator.getButton(Button.RIGHT_BUMPER)) {
                 expanderHatch.switchGrabberState();
             }
             grabberButtonPressed = manipulator.getButton(Button.B);
