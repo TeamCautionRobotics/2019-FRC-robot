@@ -164,10 +164,6 @@ public class Robot extends TimedRobot {
 
         driveBase.drive(driveLeftCommand, driveRightCommand);
 
-        if (!driverLeft.getRawButton(2) && driverLeft.getRawButton(2)) {
-            aimingLights.toggleState();
-        }
-
         if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
             cargo.intake(CargoMoverSetting.THROUGH);
         } else if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER)) {
@@ -188,6 +184,9 @@ public class Robot extends TimedRobot {
         }
         jackButtonPressed = manipulator.getButton(Button.X);
 
+        if (!aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
+            aimingLights.toggleState();
+        }
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
     }
 
