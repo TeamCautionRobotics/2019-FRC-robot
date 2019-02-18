@@ -16,6 +16,7 @@ import com.teamcautionrobotics.robot.Cargo.CargoMoverSetting;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
     /*
@@ -189,6 +190,8 @@ public class Robot extends TimedRobot {
         jackButtonPressed = manipulator.getButton(Button.X);
 
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
+
+        SmartDashboard.putNumber("Jerk Limit", driveBase.getJerkLimit());
     }
 
     // Empty methods to keep the robot's runtime from emitting messages about

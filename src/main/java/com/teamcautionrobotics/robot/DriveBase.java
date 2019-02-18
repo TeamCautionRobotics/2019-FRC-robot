@@ -41,7 +41,7 @@ public class DriveBase {
 
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
-    private final double JERK_LIMIT = 1;
+    private double jerkLimit = 1;
 
     public DriveBase(int left, int right, int leftA, int leftB, int rightA, int rightB) {
         driveLeft = new VictorSP(left);
@@ -75,17 +75,25 @@ public class DriveBase {
         drive(speed, speed);
     }
 
+    public double getJerkLimit() {
+        return jerkLimit;
+    }
+
+    public void setJerkLimit(double jerkLimit) {
+        this.jerkLimit = jerkLimit;
+    }
+
     public void driveSmoothly(double leftInput, double rightInput) {
         updateDerivatives(leftInput, rightInput);
         double leftPower = leftInput;
         double rightPower = rightInput;
 
         // limit jerk for each side if predicted jerk is too high
-        if (leftInputDerivative > JERK_LIMIT) {
+        if (leftInputDerivative > jerkLimit) {
             leftPower = limitJerk(leftInput, lastLeftPower);
         }
 
-        if (rightInputDerivative > JERK_LIMIT) {
+        if (rightInputDerivative > jerkLimit) {
             rightPower = limitJerk(rightInput, lastRightPower);
         }
         drive(leftPower, rightPower);
@@ -102,7 +110,7 @@ public class DriveBase {
     // make the actual jerk = the threshold
     private double limitJerk(double input, double lastPower) {
         // change in input
-        double di = dt * JERK_LIMIT;
+        double di = dt * jerkLimit;
         double desiredInput = lastPower + di;
         return desiredInput;
     }
