@@ -40,7 +40,8 @@ public class Robot extends TimedRobot {
      * Left joystick: X axis, robot turn control; Button 1, Cargo deploy exit flap;
      * Button 2, Toggle aiming lights
      * 
-     * Right Joystick: Y axis, robot forward and backward control.
+     * Right Joystick: Y axis, robot forward and backward control; Button 1,
+     * precision turning mode
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB; Right
@@ -87,6 +88,8 @@ public class Robot extends TimedRobot {
     private final double VELCRO_HATCH_ARM_UP_POWER = 1.0;
     private final double VELCRO_HATCH_ARM_DOWN_POWER = -0.25;
 
+    private final double PRECISION_TURNING_SCALING_FACTOR = 0.1;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -125,10 +128,19 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        boolean precisionTurningEngaged = driverRight.getTrigger();
+        if (precisionTurningEngaged) {
+            driverLeft.setDeadband(driverLeft.getDeadband() * PRECISION_TURNING_SCALING_FACTOR);
+        }
+
         double forwardCommand = -driverRight.getY();
         double turnCommand = driverLeft.getX();
         double driveLeftCommand = forwardCommand + turnCommand;
         double driveRightCommand = forwardCommand - turnCommand;
+
+        if (precisionTurningEngaged) {
+            turnCommand *= PRECISION_TURNING_SCALING_FACTOR;
+        }
 
         if (USING_VELCRO_HATCH) {
             double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
