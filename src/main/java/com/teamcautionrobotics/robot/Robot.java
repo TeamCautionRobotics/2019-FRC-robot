@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     private final double VELCRO_HATCH_ARM_UP_POWER = 1.0;
     private final double VELCRO_HATCH_ARM_DOWN_POWER = -0.25;
 
-    private final double PRECISION_TURNING_SCALING_FACTOR = 0.1;
+    private final double PRECISION_TURNING_SCALING_FACTOR = 0.4;
 
     /**
      * This function is run when the robot is first started up and should be used
