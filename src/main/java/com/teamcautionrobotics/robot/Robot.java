@@ -131,6 +131,8 @@ public class Robot extends TimedRobot {
         boolean precisionTurningEngaged = driverRight.getTrigger();
         if (precisionTurningEngaged) {
             driverLeft.setDeadband(driverLeft.getDeadband() * PRECISION_TURNING_SCALING_FACTOR);
+        } else {
+            driverLeft.setDeadband(0.1);
         }
 
         double forwardCommand = -driverRight.getY();
