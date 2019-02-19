@@ -135,12 +135,13 @@ public class Robot extends TimedRobot {
 
         double forwardCommand = -driverRight.getY();
         double turnCommand = driverLeft.getX();
-        double driveLeftCommand = forwardCommand + turnCommand;
-        double driveRightCommand = forwardCommand - turnCommand;
 
         if (precisionTurningEngaged) {
             turnCommand *= PRECISION_TURNING_SCALING_FACTOR;
         }
+
+        double driveLeftCommand = forwardCommand + turnCommand;
+        double driveRightCommand = forwardCommand - turnCommand;
 
         if (USING_VELCRO_HATCH) {
             double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
