@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
 
     AimingLights aimingLights;
     Timer velcroHatchTimer;
+    Timer jerkTimer;
 
     private double lastLeftPower;
     private double leftInputDerivative;
@@ -74,7 +75,7 @@ public class Robot extends TimedRobot {
     private double rightInputDerivative;
 
     // Change in time
-    private final double dt = TimedRobot.kDefaultPeriod;
+    private double dt;
 
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
@@ -129,6 +130,9 @@ public class Robot extends TimedRobot {
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
+
+        jerkTimer.reset();
+        jerkTimer.start();
     }
 
     /**
@@ -178,6 +182,10 @@ public class Robot extends TimedRobot {
             }
             grabberButtonPressed = manipulator.getButton(Button.B);
         }
+
+        dt = jerkTimer.get();
+        jerkTimer.reset();
+        jerkTimer.start();
 
         if (driverRight.getRawButton(2)) {
             leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
