@@ -85,8 +85,8 @@ public class Robot extends TimedRobot {
     private final double VELCRO_HATCH_ARM_PASSIVE_POWER = 0.05;
 
     // Scaling factors for the arm power based on its direction of movement
-    private final double VELCRO_HATCH_ARM_UP_POWER = 1.0;
-    private final double VELCRO_HATCH_ARM_DOWN_POWER = -0.25;
+    private final double VELCRO_HATCH_ARM_UP_COEFFICIENT = 1.0;
+    private final double VELCRO_HATCH_ARM_DOWN_COEFFICIENT = 0.25;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -134,8 +134,8 @@ public class Robot extends TimedRobot {
         double driveRightCommand = forwardCommand - turnCommand;
 
         if (USING_VELCRO_HATCH) {
-            double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_POWER
-                    : VELCRO_HATCH_ARM_DOWN_POWER;
+            double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_COEFFICIENT
+                    : VELCRO_HATCH_ARM_DOWN_COEFFICIENT;
             double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER
                     + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
 
