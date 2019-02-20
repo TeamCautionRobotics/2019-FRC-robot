@@ -17,6 +17,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
     /*
@@ -39,7 +40,8 @@ public class Robot extends TimedRobot {
      * Left joystick: X axis, robot turn control; Button 1, Cargo deploy exit flap;
      * Button 2, Toggle aiming lights
      * 
-     * Right Joystick: Y axis, robot forward and backward control.
+     * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
+     * driving toggle
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB; Right
@@ -60,7 +62,18 @@ public class Robot extends TimedRobot {
     HABJack habJack;
 
     AimingLights aimingLights;
-    Timer timer;
+    Timer velcroHatchTimer;
+    Timer jerkTimer;
+
+    private double lastLeftPower;
+    private double leftInputDerivative;
+
+    private double lastRightPower;
+    private double rightInputDerivative;
+
+    // This value is the derivative of the input power, which is only proportional
+    // to the actual jerk of the robot in m/s^3
+    double jerkLimit = 3.5;
 
     DigitalInput velcroHatchLimitSwitch;
 
@@ -75,6 +88,9 @@ public class Robot extends TimedRobot {
 
     boolean deployedFunnelRoller = false;
     boolean aimingLightsButtonPressed = false;
+
+    boolean smoothDrivingEnabled = true;
+    boolean smoothDrivingButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = true;
 
@@ -109,12 +125,18 @@ public class Robot extends TimedRobot {
         }
 
         aimingLights = new AimingLights(0, 1);
-        timer = new Timer();
+        velcroHatchTimer = new Timer();
+
+        jerkTimer = new Timer();
+        jerkTimer.reset();
+        jerkTimer.start();
 
         velcroHatchLimitSwitch = new DigitalInput(0);
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
+
+        SmartDashboard.putNumber("Jerk Limit", jerkLimit);
     }
 
     /**
@@ -147,14 +169,14 @@ public class Robot extends TimedRobot {
 
             // Start the driveback timer when the deploy button is released
             if (!manipulator.getButton(Button.B) && deployButtonPressed) {
-                timer.reset();
-                timer.start();
+                velcroHatchTimer.reset();
+                velcroHatchTimer.start();
             }
             deployButtonPressed = manipulator.getButton(Button.B);
             velcroHatch.deploy(deployButtonPressed);
 
             // Drive backwards after the deploy button is released
-            if (timer.get() > 0 && timer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
+            if (velcroHatchTimer.get() > 0 && velcroHatchTimer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
                 driveLeftCommand = -1;
                 driveRightCommand = -1;
             }
@@ -170,7 +192,52 @@ public class Robot extends TimedRobot {
             grabberButtonPressed = manipulator.getButton(Button.B);
         }
 
-        driveBase.drive(driveLeftCommand, driveRightCommand);
+        // change in time between RobotPeriodic() calls
+        double dt = jerkTimer.get();
+        jerkTimer.reset();
+        jerkTimer.start();
+
+        /*
+         * Work showing that the jerk of the robot is proportional the the rate of
+         * change of the driver input:
+         * 
+         * a = Fnet / m = (1/m)(Fa - Fs)
+         * da/dt = (1/m)(dFa/dt - dFs/dt) = (1/m)(kdi/dt - 0) = (k/m) di/dt
+         * since the driver input is proportional to the torque
+         * applied on the axle and the friction force is roughly constant (Get it?
+         * Roughly, since it's friction).
+         * 
+         * This math is wrong, but it has a pun so it will stay.
+         */
+
+        if (!smoothDrivingButtonPressed && driverRight.getRawButton(2)) {
+            smoothDrivingEnabled = !smoothDrivingEnabled;
+        }
+        smoothDrivingButtonPressed = driverRight.getRawButton(2);
+
+        if (smoothDrivingEnabled) {
+            leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
+            rightInputDerivative = (driveRightCommand - lastRightPower) / dt;
+
+            // limit jerk for each side if predicted jerk is too high
+            if (Math.abs(leftInputDerivative) > jerkLimit) {
+                // desired change in input
+                double di = dt * jerkLimit;
+                driveLeftCommand = lastLeftPower + Math.signum(leftInputDerivative) * di;
+            }
+
+            if (Math.abs(rightInputDerivative) > jerkLimit) {
+                // desired change in input
+                double di = dt * jerkLimit;
+                driveRightCommand = lastRightPower + Math.signum(rightInputDerivative) * di;
+            }
+            driveBase.drive(driveLeftCommand, driveRightCommand);
+        } else {
+            driveBase.drive(driveLeftCommand, driveRightCommand);
+        }
+
+        lastLeftPower = driveLeftCommand;
+        lastRightPower = driveRightCommand;
 
         if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
             cargo.intake(CargoMoverSetting.THROUGH);
@@ -196,6 +263,8 @@ public class Robot extends TimedRobot {
             aimingLights.toggleState();
         }
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
+
+        jerkLimit = SmartDashboard.getNumber("Jerk Limit", jerkLimit);
     }
 
     // Empty methods to keep the robot's runtime from emitting messages about
