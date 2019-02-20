@@ -230,7 +230,7 @@ public class Robot extends TimedRobot {
 
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
 
-        SmartDashboard.putNumber("Jerk Limit", driveBase.getJerkLimit());
+        SmartDashboard.putNumber("Jerk Limit", jerkLimit);
     }
 
     // Empty methods to keep the robot's runtime from emitting messages about
