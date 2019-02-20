@@ -88,6 +88,9 @@ public class Robot extends TimedRobot {
     boolean deployedFunnelRoller = false;
     boolean aimingLightsButtonPressed = false;
 
+    boolean smoothDrivingEnabled = true;
+    boolean smoothDrivingButtonPressed = false;
+
     private final boolean USING_VELCRO_HATCH = true;
 
     // Time the robot should drive backwards for after deploying the hatch
@@ -198,7 +201,12 @@ public class Robot extends TimedRobot {
          * 
          * This math is wrong, but it has a pun so it will stay.
          */
-        if (driverRight.getRawButton(2)) {
+
+        if (!smoothDrivingButtonPressed && driverRight.getRawButton(2)) {
+            smoothDrivingEnabled = !smoothDrivingEnabled;
+        }
+
+        if (smoothDrivingEnabled) {
             leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
             rightInputDerivative = (driveRightCommand - lastRightPower) / dt;
 
