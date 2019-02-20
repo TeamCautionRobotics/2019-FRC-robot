@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
             double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_COEFFICIENT
                     : VELCRO_HATCH_ARM_DOWN_COEFFICIENT;
             double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER
-                    + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
+                    + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_Y);
 
             if (velcroHatchLimitSwitch.get()) {
                 velcroHatch.rotate(Math.max(armPower, VELCRO_HATCH_ARM_PASSIVE_POWER));
