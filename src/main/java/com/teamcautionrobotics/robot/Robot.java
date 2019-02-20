@@ -185,7 +185,7 @@ public class Robot extends TimedRobot {
         }
         deployedFunnelRoller = manipulator.getButton(Button.A);
 
-        cargo.deployExitFlap(driverLeft.getTrigger());
+        cargo.deployExitFlap(driverRight.getTrigger());
 
         if (!jackButtonPressed && manipulator.getButton(Button.X)) {
             habJack.toggleJack();
