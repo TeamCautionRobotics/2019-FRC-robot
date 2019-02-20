@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
      * Button 2, Toggle aiming lights
      * 
      * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
-     * driving
+     * driving toggle
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB; Right
@@ -205,6 +205,7 @@ public class Robot extends TimedRobot {
         if (!smoothDrivingButtonPressed && driverRight.getRawButton(2)) {
             smoothDrivingEnabled = !smoothDrivingEnabled;
         }
+        smoothDrivingButtonPressed = driverRight.getRawButton(2);
 
         if (smoothDrivingEnabled) {
             leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
