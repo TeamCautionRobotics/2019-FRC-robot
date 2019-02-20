@@ -10,9 +10,10 @@ public class VelcroHatch {
     // pneumatics objects
     private Solenoid pusher;
 
-
     public VelcroHatch(int winchPort, int pusherPort) {
         winch = new VictorSP(winchPort);
+        // Positive raises winch
+        winch.setInverted(true);
         pusher = new Solenoid(pusherPort);
     }
 

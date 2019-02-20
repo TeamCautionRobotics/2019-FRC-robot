@@ -23,15 +23,15 @@ public class Robot extends TimedRobot {
     /*
      * RoboRIO ports:
      * 
-     * PWM: 0, Left drive; 1, Right drive; 2, Hatch / Winch, 3 Cargo mechanism
+     * PWM: 0, Left drive; 1, Right drive; 2, Winch, 3 Cargo mechanism
      * 
-     * DIO: 0, left drive encoder A; 1, left drive encoder B; 2, right drive encoder
-     * A; 3, right drive encoder B; 4, 5, 6, line following (left, right, and back,
-     * respectively); 7, limit switch for Velcro hatch mechanism
+     * DIO: 0, limit switch for Velcro hatch mechanism (false when pressed);
+     * 1, 2, 3, line following (left, right, and back, respectively) future
+     * allocation, not currently connected
      * 
-     * Relay: 0, horizontal light; 1, downward light
+     * Relay: 0, both lights
      * 
-     * Pneumatic Control Module: 0, jack; 1, Cargo Exit Flap; 2, Velcro hatch
+     * Pneumatic Control Module: 0, Jack; 1, Cargo Exit Flap; 2, Velcro hatch
      * deployer; 3, Cargo Funnel Deployer (deploys the nice-to-have wheels) 4,
      * Expander hatch reacher; 5, Expander hatch grabber
      * 
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
      * Button 2, Toggle aiming lights
      * 
      * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
-     * driving toggle; Button 3,  precision turning mode
+     * driving toggle; Button 3, precision turning mode
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB; Right
@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
 
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
-    double jerkLimit = 3.5;
+    double jerkLimit = 4.5;
 
     DigitalInput velcroHatchLimitSwitch;
 
@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
 
     // Scaling factors for the arm power based on its direction of movement
     private final double VELCRO_HATCH_ARM_UP_COEFFICIENT = 1.0;
-    private final double VELCRO_HATCH_ARM_DOWN_COEFFICIENT = 0.25;
+    private final double VELCRO_HATCH_ARM_DOWN_COEFFICIENT = 1.0;
 
     private final double PRECISION_TURNING_SCALING_FACTOR = 0.4;
 
@@ -171,13 +171,13 @@ public class Robot extends TimedRobot {
         double driveRightCommand = forwardCommand - turnCommand;
 
         if (USING_VELCRO_HATCH) {
-            double velcroArmScalingFactor = (manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_COEFFICIENT
+            double velcroArmScalingFactor = (-manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_COEFFICIENT
                     : VELCRO_HATCH_ARM_DOWN_COEFFICIENT;
             double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER
-                    + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_Y);
+                    + velcroArmScalingFactor * -manipulator.getAxis(Axis.LEFT_Y);
 
-            if (velcroHatchLimitSwitch.get()) {
-                velcroHatch.rotate(Math.max(armPower, VELCRO_HATCH_ARM_PASSIVE_POWER));
+            if (!velcroHatchLimitSwitch.get()) {
+                velcroHatch.rotate(Math.min(armPower, 0) + VELCRO_HATCH_ARM_PASSIVE_POWER);
             } else {
                 velcroHatch.rotate(armPower);
             }
@@ -229,6 +229,7 @@ public class Robot extends TimedRobot {
             smoothDrivingEnabled = !smoothDrivingEnabled;
         }
         smoothDrivingButtonPressed = driverRight.getRawButton(2);
+        SmartDashboard.putBoolean("Smooth deriving enable", smoothDrivingEnabled);
 
         if (smoothDrivingEnabled) {
             leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
@@ -254,11 +255,11 @@ public class Robot extends TimedRobot {
         lastLeftPower = driveLeftCommand;
         lastRightPower = driveRightCommand;
 
-        if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
+        if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER) || driverLeft.getTrigger()) {
             cargo.intake(CargoMoverSetting.THROUGH);
-        } else if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER)) {
+        } else if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
             cargo.intake(CargoMoverSetting.BACK);
-        } else {
+        } else if (!driverLeft.getTrigger()) {
             cargo.intake(CargoMoverSetting.STOP);
         }
 

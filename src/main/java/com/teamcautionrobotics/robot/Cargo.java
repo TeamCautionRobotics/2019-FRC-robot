@@ -28,6 +28,8 @@ public class Cargo {
 
     public Cargo(int funnelRollerPort, int exitFlapDeployerPort, int funnelRollerDeployerPort) {
         cargoMover = new VictorSP(funnelRollerPort);
+        // Positive moves ball up (THROUGH)
+        cargoMover.setInverted(true);
         exitFlapDeployer = new Solenoid(exitFlapDeployerPort);
         funnelRollerDeployer = new Solenoid(funnelRollerDeployerPort);
         currentFunnelRollerState = false;
