@@ -133,6 +133,8 @@ public class Robot extends TimedRobot {
 
         jerkTimer.reset();
         jerkTimer.start();
+
+        SmartDashboard.putNumber("Jerk Limit", jerkLimit);
     }
 
     /**
@@ -237,7 +239,7 @@ public class Robot extends TimedRobot {
 
         aimingLightsButtonPressed = driverLeft.getRawButton(2);
 
-        SmartDashboard.putNumber("Jerk Limit", jerkLimit);
+        jerkLimit = SmartDashboard.getNumber("Jerk Limit", jerkLimit);
     }
 
     // Empty methods to keep the robot's runtime from emitting messages about
