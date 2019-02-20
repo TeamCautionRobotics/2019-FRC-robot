@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
 
         aimingLights = new AimingLights(0, 1);
         velcroHatchTimer = new Timer();
-        
+
         jerkTimer = new Timer();
         jerkTimer.reset();
         jerkTimer.start();
@@ -205,13 +205,13 @@ public class Robot extends TimedRobot {
             if (Math.abs(leftInputDerivative) > jerkLimit) {
                 // desired change in input
                 double di = dt * jerkLimit;
-                driveLeftCommand = lastLeftPower + di;
+                driveLeftCommand = lastLeftPower + Math.signum(leftInputDerivative) * di;
             }
 
             if (Math.abs(rightInputDerivative) > jerkLimit) {
                 // desired change in input
                 double di = dt * jerkLimit;
-                driveRightCommand = lastRightPower + di;
+                driveRightCommand = lastRightPower + Math.signum(rightInputDerivative) * di;
             }
             driveBase.drive(driveLeftCommand, driveRightCommand);
         } else {
