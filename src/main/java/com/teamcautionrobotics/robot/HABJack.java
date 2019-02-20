@@ -4,20 +4,17 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class HABJack {
 
-    private final Solenoid leftJack;
-    private final Solenoid rightJack;
+    private final Solenoid jack;
 
     // true if propping up
     private boolean currentState;
 
-    public HABJack(int leftJackPort, int rightJackPort) {
-        leftJack = new Solenoid(leftJackPort);
-        rightJack = new Solenoid(rightJackPort);
+    public HABJack(int jackPort) {
+        jack = new Solenoid(jackPort);
     }
 
     public void setJack(boolean up) {
-        leftJack.set(up);
-        rightJack.set(up);
+        jack.set(up);
         currentState = up;
     }
 
