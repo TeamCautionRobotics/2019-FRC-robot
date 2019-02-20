@@ -44,7 +44,8 @@ public class Robot extends TimedRobot {
      * Left joystick: X axis, robot turn control; Button 1, Cargo deploy exit flap;
      * Button 2, Toggle aiming lights
      * 
-     * Right Joystick: Y axis, robot forward and backward control.
+     * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
+     * driving
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB; Right
