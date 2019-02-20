@@ -14,8 +14,11 @@ import com.teamcautionrobotics.misc2019.Gamepad.Button;
 import com.teamcautionrobotics.robot.Cargo.CargoMoverSetting;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
@@ -63,6 +66,20 @@ public class Robot extends TimedRobot {
 
     AimingLights aimingLights;
     Timer timer;
+
+
+    private double lastLeftPower;
+    private double leftInputDerivative;
+
+    private double lastRightPower;
+    private double rightInputDerivative;
+
+    // Change in time
+    private final double dt = TimedRobot.kDefaultPeriod;
+
+    // This value is the derivative of the input power, which is only proportional
+    // to the actual jerk of the robot in m/s^3
+    double jerkLimit = 1;
 
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
@@ -163,7 +180,29 @@ public class Robot extends TimedRobot {
             grabberButtonPressed = manipulator.getButton(Button.B);
         }
 
-        driveBase.driveSmoothly(driveLeftCommand, driveRightCommand);
+        if (driverRight.getRawButton(2)) {
+            leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
+            rightInputDerivative = (driveRightCommand - lastRightPower) / dt;
+
+            // limit jerk for each side if predicted jerk is too high
+            if (leftInputDerivative > jerkLimit) {
+                // desired change in input
+                double di = dt * jerkLimit;
+                driveLeftCommand = lastLeftPower + di;
+            }
+
+            if (rightInputDerivative > jerkLimit) {
+                // desired change in input
+                double di = dt * jerkLimit;
+                driveRightCommand = lastRightPower + di;
+            }
+            driveBase.drive(driveLeftCommand, driveRightCommand);
+        } else {
+            driveBase.drive(driveLeftCommand, driveRightCommand);
+        }
+
+        lastLeftPower = driveLeftCommand;
+        lastRightPower = driveRightCommand;
 
         if (!driverLeft.getRawButton(2) && driverLeft.getRawButton(2)) {
             aimingLights.toggleState();

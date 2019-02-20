@@ -30,19 +30,6 @@ public class DriveBase {
     public PIDController pidController;
     public final DriveBasePIDOutput pidOutput;
 
-    private double lastLeftPower;
-    private double leftInputDerivative;
-
-    private double lastRightPower;
-    private double rightInputDerivative;
-
-    // Change in time
-    private final double dt = TimedRobot.kDefaultPeriod;
-
-    // This value is the derivative of the input power, which is only proportional
-    // to the actual jerk of the robot in m/s^3
-    private double jerkLimit = 1;
-
     public DriveBase(int left, int right, int leftA, int leftB, int rightA, int rightB) {
         driveLeft = new VictorSP(left);
         driveRight = new VictorSP(right);
@@ -73,46 +60,6 @@ public class DriveBase {
 
     public void drive(double speed) {
         drive(speed, speed);
-    }
-
-    public double getJerkLimit() {
-        return jerkLimit;
-    }
-
-    public void setJerkLimit(double jerkLimit) {
-        this.jerkLimit = jerkLimit;
-    }
-
-    public void driveSmoothly(double leftInput, double rightInput) {
-        updateDerivatives(leftInput, rightInput);
-        double leftPower = leftInput;
-        double rightPower = rightInput;
-
-        // limit jerk for each side if predicted jerk is too high
-        if (leftInputDerivative > jerkLimit) {
-            leftPower = limitJerk(leftInput, lastLeftPower);
-        }
-
-        if (rightInputDerivative > jerkLimit) {
-            rightPower = limitJerk(rightInput, lastRightPower);
-        }
-        drive(leftPower, rightPower);
-
-        lastLeftPower = leftPower;
-        lastRightPower = rightPower;
-    }
-
-    private void updateDerivatives(double leftInput, double rightInput) {
-        leftInputDerivative = (leftInput - lastLeftPower) / dt;
-        rightInputDerivative = (rightInput - lastRightPower) / dt;
-    }
-
-    // make the actual jerk = the threshold
-    private double limitJerk(double input, double lastPower) {
-        // change in input
-        double di = dt * jerkLimit;
-        double desiredInput = lastPower + di;
-        return desiredInput;
     }
 
     public void resetGyro() {
