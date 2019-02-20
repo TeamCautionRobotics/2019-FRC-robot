@@ -195,6 +195,8 @@ public class Robot extends TimedRobot {
          * since the driver input is proportional to the torque
          * applied on the axle and the friction force is roughly constant (Get it?
          * Roughly, since it's friction).
+         * 
+         * This math is wrong, but it has a pun so it will stay.
          */
         if (driverRight.getRawButton(2)) {
             leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
