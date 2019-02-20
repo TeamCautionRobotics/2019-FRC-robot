@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
     private final double HATCH_DEPLOY_DRIVEBACK_TIME = 0.25;
 
     // Passive power to hold the velcro arm in position
-    private final double VELCRO_HATCH_ARM_PASSIVE_POWER = 0.00;
+    private final double VELCRO_HATCH_ARM_PASSIVE_POWER = 0.05;
 
     // Scaling factors for the arm power based on its direction of movement
     private final double VELCRO_HATCH_ARM_UP_POWER = 1.0;
