@@ -72,9 +72,6 @@ public class Robot extends TimedRobot {
     private double lastRightPower;
     private double rightInputDerivative;
 
-    // Change in time
-    private double dt;
-
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
     double jerkLimit = 3.5;
@@ -184,7 +181,8 @@ public class Robot extends TimedRobot {
             grabberButtonPressed = manipulator.getButton(Button.B);
         }
 
-        dt = jerkTimer.get();
+        // change in time between RobotPeriodic() calls
+        double dt = jerkTimer.get();
         jerkTimer.reset();
         jerkTimer.start();
 
