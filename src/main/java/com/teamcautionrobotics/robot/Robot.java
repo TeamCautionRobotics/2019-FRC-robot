@@ -190,8 +190,9 @@ public class Robot extends TimedRobot {
          * Work showing that the jerk of the robot is proportional the the rate of
          * change of the driver input:
          * 
-         * a = Fnet / m = (1/m)(Fa - Fs) da/dt = (1/m)(dFa/dt - dFs/dt) = (1/m)(kdi/dt -
-         * 0) = (k/m) * di/dt since the driver input is proportional to the torque
+         * a = Fnet / m = (1/m)(Fa - Fs)
+         * da/dt = (1/m)(dFa/dt - dFs/dt) = (1/m)(kdi/dt - 0) = (k/m) di/dt
+         * since the driver input is proportional to the torque
          * applied on the axle and the friction force is roughly constant (Get it?
          * Roughly, since it's friction).
          */
