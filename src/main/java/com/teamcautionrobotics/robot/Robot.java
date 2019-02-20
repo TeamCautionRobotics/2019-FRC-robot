@@ -203,13 +203,13 @@ public class Robot extends TimedRobot {
             rightInputDerivative = (driveRightCommand - lastRightPower) / dt;
 
             // limit jerk for each side if predicted jerk is too high
-            if (leftInputDerivative > jerkLimit) {
+            if (Math.abs(leftInputDerivative) > jerkLimit) {
                 // desired change in input
                 double di = dt * jerkLimit;
                 driveLeftCommand = lastLeftPower + di;
             }
 
-            if (rightInputDerivative > jerkLimit) {
+            if (Math.abs(rightInputDerivative) > jerkLimit) {
                 // desired change in input
                 double di = dt * jerkLimit;
                 driveRightCommand = lastRightPower + di;
