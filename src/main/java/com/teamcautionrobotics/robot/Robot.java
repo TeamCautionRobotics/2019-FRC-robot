@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
      * Button 2, Toggle aiming lights
      * 
      * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
-     * driving toggle
+     * driving toggle; Button 3,  precision turning mode
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Jack for HAB; Right
@@ -104,6 +104,8 @@ public class Robot extends TimedRobot {
     private final double VELCRO_HATCH_ARM_UP_COEFFICIENT = 1.0;
     private final double VELCRO_HATCH_ARM_DOWN_COEFFICIENT = 0.25;
 
+    private final double PRECISION_TURNING_SCALING_FACTOR = 0.4;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -151,8 +153,20 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        boolean precisionTurningEngaged = driverRight.getRawButton(3);
+        if (precisionTurningEngaged) {
+            driverLeft.setDeadband(driverLeft.getDeadband() * PRECISION_TURNING_SCALING_FACTOR);
+        } else {
+            driverLeft.setDeadband(0.1);
+        }
+
         double forwardCommand = -driverRight.getY();
         double turnCommand = driverLeft.getX();
+
+        if (precisionTurningEngaged) {
+            turnCommand *= PRECISION_TURNING_SCALING_FACTOR;
+        }
+
         double driveLeftCommand = forwardCommand + turnCommand;
         double driveRightCommand = forwardCommand - turnCommand;
 
