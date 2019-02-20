@@ -65,8 +65,7 @@ public class Robot extends TimedRobot {
     HABJack habJack;
 
     AimingLights aimingLights;
-    Timer timer;
-
+    Timer velcroHatchTimer;
 
     private double lastLeftPower;
     private double leftInputDerivative;
@@ -126,7 +125,7 @@ public class Robot extends TimedRobot {
         }
 
         aimingLights = new AimingLights(0, 1);
-        timer = new Timer();
+        velcroHatchTimer = new Timer();
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -157,14 +156,14 @@ public class Robot extends TimedRobot {
 
             // Start the driveback timer when the deploy button is released
             if (!manipulator.getButton(Button.B) && deployButtonPressed) {
-                timer.reset();
-                timer.start();
+                velcroHatchTimer.reset();
+                velcroHatchTimer.start();
             }
             deployButtonPressed = manipulator.getButton(Button.B);
             velcroHatch.deploy(deployButtonPressed);
 
             // Drive backwards after the deploy button is released
-            if (timer.get() > 0 && timer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
+            if (velcroHatchTimer.get() > 0 && velcroHatchTimer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
                 driveLeftCommand = -1;
                 driveRightCommand = -1;
             }
