@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
         manipulator = new Gamepad(2);
 
         // pneumatic ports are not finalized
-        driveBase = new DriveBase(0, 1, 0, 1, 2, 3);
+        driveBase = new DriveBase(0, 1);
         habJack = new HABJack(0, 1);
         cargo = new Cargo(3, 2, 3);
         if (USING_VELCRO_HATCH) {
