@@ -14,6 +14,7 @@ import com.teamcautionrobotics.misc2019.Gamepad.Button;
 import com.teamcautionrobotics.robot.Cargo.CargoMoverSetting;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -60,6 +61,8 @@ public class Robot extends TimedRobot {
 
     AimingLights aimingLights;
     Timer timer;
+
+    DigitalInput velcroHatchLimitSwitch;
 
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
@@ -108,6 +111,8 @@ public class Robot extends TimedRobot {
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
 
+        velcroHatchLimitSwitch = new DigitalInput(0);
+
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
     }
@@ -133,7 +138,12 @@ public class Robot extends TimedRobot {
                     : VELCRO_HATCH_ARM_DOWN_POWER;
             double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER
                     + velcroArmScalingFactor * manipulator.getAxis(Axis.LEFT_TRIGGER);
-            velcroHatch.rotate(armPower);
+
+            if (velcroHatchLimitSwitch.get()) {
+                velcroHatch.rotate(Math.max(armPower, VELCRO_HATCH_ARM_PASSIVE_POWER));
+            } else {
+                velcroHatch.rotate(armPower);
+            }
 
             // Start the driveback timer when the deploy button is released
             if (!manipulator.getButton(Button.B) && deployButtonPressed) {
