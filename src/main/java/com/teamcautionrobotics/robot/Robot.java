@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
 
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
-    double jerkLimit = 1;
+    double jerkLimit = 3.5;
 
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
