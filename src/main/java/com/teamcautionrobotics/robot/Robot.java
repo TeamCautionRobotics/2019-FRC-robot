@@ -125,12 +125,13 @@ public class Robot extends TimedRobot {
 
         aimingLights = new AimingLights(0, 1);
         velcroHatchTimer = new Timer();
+        
+        jerkTimer = new Timer();
+        jerkTimer.reset();
+        jerkTimer.start();
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
-
-        jerkTimer.reset();
-        jerkTimer.start();
 
         SmartDashboard.putNumber("Jerk Limit", jerkLimit);
     }
