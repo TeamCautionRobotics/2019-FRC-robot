@@ -20,6 +20,7 @@ public class ButtonPressRunner {
     public ButtonPressRunner(BooleanSupplier getButton, Runnable runnable) {
         this.getButton = getButton;
         this.runnable = runnable;
+        lastButtonState = this.getButton.getAsBoolean();
     }
 
     /**
