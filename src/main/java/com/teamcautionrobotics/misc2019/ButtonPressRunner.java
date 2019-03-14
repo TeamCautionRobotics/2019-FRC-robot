@@ -8,7 +8,7 @@ import java.util.function.BooleanSupplier;
 public class ButtonPressRunner {
     private final BooleanSupplier getButton;
     private final Runnable runnable;
-    boolean lastButtonState;
+    private boolean lastButtonState;
 
     /**
      * Calls runnable when the button value, accessed by getButton
