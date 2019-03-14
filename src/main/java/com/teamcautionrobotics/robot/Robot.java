@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
         aimingLights = new AimingLights(0, 1);
         timer = new Timer();
 
-        if (USING_VELCRO_HATCH) {
+        if (!USING_VELCRO_HATCH) {
             reacherButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.LEFT_BUMPER), expanderHatch::toggleReacher);
             grabberButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER), expanderHatch::toggleGrabber);
         }
