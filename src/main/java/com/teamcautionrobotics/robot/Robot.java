@@ -7,6 +7,7 @@
 
 package com.teamcautionrobotics.robot;
 
+import com.teamcautionrobotics.misc2019.ButtonPressRunner;
 import com.teamcautionrobotics.misc2019.EnhancedJoystick;
 import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
@@ -25,9 +26,9 @@ public class Robot extends TimedRobot {
      * 
      * PWM: 0, Left drive; 1, Right drive; 2, Winch, 3 Cargo mechanism
      * 
-     * DIO: 0, limit switch for Velcro hatch mechanism (false when pressed);
-     * 1, 2, 3, line following (left, right, and back, respectively) future
-     * allocation, not currently connected
+     * DIO: 0, limit switch for Velcro hatch mechanism (false when pressed); 1, 2,
+     * 3, line following (left, right, and back, respectively) future allocation,
+     * not currently connected
      * 
      * Relay: 0, both lights
      * 
@@ -81,13 +82,13 @@ public class Robot extends TimedRobot {
     boolean deployButtonPressed = false;
 
     // These are for the Expander Hatch mechanism.
-    boolean reacherButtonPressed = false;
-    boolean grabberButtonPressed = false;
+    private ButtonPressRunner grabberButtonRunner;
+    private ButtonPressRunner reacherButtonRunner;
 
-    boolean jackButtonPressed = false;
+    private ButtonPressRunner jackButtonRunner;
 
-    boolean deployedFunnelRoller = false;
-    boolean aimingLightsButtonPressed = false;
+    private ButtonPressRunner funnelRollerButtonRunner;
+    private ButtonPressRunner aimingLightsButtonRunner;
 
     boolean smoothDrivingEnabled = true;
     boolean smoothDrivingButtonPressed = false;
@@ -135,6 +136,18 @@ public class Robot extends TimedRobot {
         jerkTimer.start();
 
         velcroHatchLimitSwitch = new DigitalInput(0);
+
+        if (!USING_VELCRO_HATCH) {
+            reacherButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
+                    expanderHatch::toggleReacher);
+            grabberButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
+                    expanderHatch::toggleGrabber);
+        }
+
+        funnelRollerButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.A),
+                cargo::toggleFunnelRoller);
+        jackButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.X), habJack::toggleJack);
+        aimingLightsButtonRunner = new ButtonPressRunner(() -> driverLeft.getRawButton(2), aimingLights::toggleState);
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -196,15 +209,8 @@ public class Robot extends TimedRobot {
                 driveRightCommand = -1;
             }
         } else {
-            if (!reacherButtonPressed && manipulator.getButton(Button.LEFT_BUMPER)) {
-                expanderHatch.toggleReacher();
-            }
-            reacherButtonPressed = manipulator.getButton(Button.LEFT_BUMPER);
-
-            if (!grabberButtonPressed && manipulator.getButton(Button.RIGHT_BUMPER)) {
-                expanderHatch.toggleGrabber();
-            }
-            grabberButtonPressed = manipulator.getButton(Button.B);
+            reacherButtonRunner.update();
+            grabberButtonRunner.update();
         }
 
         // change in time between RobotPeriodic() calls
@@ -216,11 +222,10 @@ public class Robot extends TimedRobot {
          * Work showing that the jerk of the robot is proportional the the rate of
          * change of the driver input:
          * 
-         * a = Fnet / m = (1/m)(Fa - Fs)
-         * da/dt = (1/m)(dFa/dt - dFs/dt) = (1/m)(kdi/dt - 0) = (k/m) di/dt
-         * since the driver input is proportional to the torque
-         * applied on the axle and the friction force is roughly constant (Get it?
-         * Roughly, since it's friction).
+         * a = Fnet / m = (1/m)(Fa - Fs) da/dt = (1/m)(dFa/dt - dFs/dt) = (1/m)(kdi/dt -
+         * 0) = (k/m) di/dt since the driver input is proportional to the torque applied
+         * on the axle and the friction force is roughly constant (Get it? Roughly,
+         * since it's friction).
          * 
          * This math is wrong, but it has a pun so it will stay.
          */
@@ -263,22 +268,11 @@ public class Robot extends TimedRobot {
             cargo.intake(CargoMoverSetting.STOP);
         }
 
-        if (!deployedFunnelRoller && manipulator.getButton(Button.A)) {
-            cargo.toggleFunnelRoller();
-        }
-        deployedFunnelRoller = manipulator.getButton(Button.A);
+        funnelRollerButtonRunner.update();
+        jackButtonRunner.update();
+        aimingLightsButtonRunner.update();
 
         cargo.deployExitFlap(driverRight.getTrigger());
-
-        if (!jackButtonPressed && manipulator.getButton(Button.X)) {
-            habJack.toggleJack();
-        }
-        jackButtonPressed = manipulator.getButton(Button.X);
-
-        if (!aimingLightsButtonPressed && driverLeft.getRawButton(2)) {
-            aimingLights.toggleState();
-        }
-        aimingLightsButtonPressed = driverLeft.getRawButton(2);
 
         jerkLimit = SmartDashboard.getNumber("Jerk Limit", jerkLimit);
     }
