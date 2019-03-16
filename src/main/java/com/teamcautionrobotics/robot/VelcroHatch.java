@@ -3,6 +3,8 @@ package com.teamcautionrobotics.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class VelcroHatch {
 
     private DigitalInput velcroHatchLimitSwitch;
@@ -20,15 +22,15 @@ public class VelcroHatch {
         velcroHatchLimitSwitch = new DigitalInput(limitSwitchPort);
     }
 
-    public boolean armIsUp(){
-        return !velcroHatchLimitSwitch.get();
-    }
-
     public void rotate(double power) {
         winch.set(power);
     }
 
     public void deploy(boolean activate) {
         pusher.set(activate);
+    }
+
+    public boolean armIsUp() {
+        return !velcroHatchLimitSwitch.get();
     }
 }
