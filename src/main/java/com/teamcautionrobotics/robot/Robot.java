@@ -65,15 +65,12 @@ public class Robot extends TimedRobot {
     Timer velcroHatchTimer;
     Timer jerkTimer;
 
-    private double lastLeftPower;
-    private double leftInputDerivative;
-
-    private double lastRightPower;
-    private double rightInputDerivative;
+    private double lastPower;
+    private double inputDerivative;
 
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
-    double jerkLimit = 4.5;
+    private double jerkLimit = 4.5;
 
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
@@ -87,8 +84,8 @@ public class Robot extends TimedRobot {
     private ButtonPressRunner funnelRollerButtonRunner;
     private ButtonPressRunner aimingLightsButtonRunner;
 
-    boolean smoothDrivingEnabled = true;
-    boolean smoothDrivingButtonPressed = false;
+    private boolean smoothDrivingEnabled = true;
+    private boolean smoothDrivingButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = true;
 
@@ -131,6 +128,7 @@ public class Robot extends TimedRobot {
         jerkTimer = new Timer();
         jerkTimer.reset();
         jerkTimer.start();
+        lastPower = 0;
 
         if (!USING_VELCRO_HATCH) {
             reacherButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
@@ -175,9 +173,6 @@ public class Robot extends TimedRobot {
             turnCommand *= PRECISION_TURNING_SCALING_FACTOR;
         }
 
-        double driveLeftCommand = forwardCommand + turnCommand;
-        double driveRightCommand = forwardCommand - turnCommand;
-
         if (USING_VELCRO_HATCH) {
             double velcroArmScalingFactor = (-manipulator.getAxis(Axis.LEFT_Y) >= 0) ? VELCRO_HATCH_ARM_UP_COEFFICIENT
                     : VELCRO_HATCH_ARM_DOWN_COEFFICIENT;
@@ -201,8 +196,8 @@ public class Robot extends TimedRobot {
 
             // Drive backwards after the deploy button is released
             if (velcroHatchTimer.get() > 0 && velcroHatchTimer.get() < HATCH_DEPLOY_DRIVEBACK_TIME) {
-                driveLeftCommand = -1;
-                driveRightCommand = -1;
+                forwardCommand = -1;
+                turnCommand = 0;
             }
         } else {
             reacherButtonRunner.update();
@@ -232,29 +227,27 @@ public class Robot extends TimedRobot {
         smoothDrivingButtonPressed = driverRight.getRawButton(2);
         SmartDashboard.putBoolean("Smooth deriving enable", smoothDrivingEnabled);
 
+        double driveLeftCommand;
+        double driveRightCommand;
         if (smoothDrivingEnabled) {
-            leftInputDerivative = (driveLeftCommand - lastLeftPower) / dt;
-            rightInputDerivative = (driveRightCommand - lastRightPower) / dt;
+            inputDerivative = (forwardCommand - lastPower) / dt;
 
             // limit jerk for each side if predicted jerk is too high
-            if (Math.abs(leftInputDerivative) > jerkLimit) {
+            if (Math.abs(inputDerivative) > jerkLimit) {
                 // desired change in input
                 double di = dt * jerkLimit;
-                driveLeftCommand = lastLeftPower + Math.signum(leftInputDerivative) * di;
+                forwardCommand = lastPower + Math.signum(inputDerivative) * di;
             }
-
-            if (Math.abs(rightInputDerivative) > jerkLimit) {
-                // desired change in input
-                double di = dt * jerkLimit;
-                driveRightCommand = lastRightPower + Math.signum(rightInputDerivative) * di;
-            }
+            driveLeftCommand = forwardCommand + turnCommand;
+            driveRightCommand = forwardCommand - turnCommand;
             driveBase.drive(driveLeftCommand, driveRightCommand);
         } else {
+            driveLeftCommand = forwardCommand + turnCommand;
+            driveRightCommand = forwardCommand - turnCommand;
             driveBase.drive(driveLeftCommand, driveRightCommand);
         }
 
-        lastLeftPower = driveLeftCommand;
-        lastRightPower = driveRightCommand;
+        lastPower = forwardCommand;
 
         if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER) || driverLeft.getTrigger()) {
             cargo.intake(CargoMoverSetting.THROUGH);
