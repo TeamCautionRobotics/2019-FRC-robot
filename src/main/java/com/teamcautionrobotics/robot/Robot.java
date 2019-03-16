@@ -250,7 +250,7 @@ public class Robot extends TimedRobot {
             driveBase.drive(driveLeftCommand, driveRightCommand);
         }
 
-        lastPower = driveLeftCommand;
+        lastPower = forwardCommand;
 
         if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER) || driverLeft.getTrigger()) {
             cargo.intake(CargoMoverSetting.THROUGH);
