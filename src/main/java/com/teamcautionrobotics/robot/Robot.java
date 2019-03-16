@@ -131,6 +131,7 @@ public class Robot extends TimedRobot {
         jerkTimer = new Timer();
         jerkTimer.reset();
         jerkTimer.start();
+        lastPower = 0;
 
         velcroHatchLimitSwitch = new DigitalInput(0);
 
