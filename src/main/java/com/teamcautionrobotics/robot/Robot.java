@@ -256,13 +256,14 @@ public class Robot extends TimedRobot {
         lastLeftPower = driveLeftCommand;
         lastRightPower = driveRightCommand;
 
+        CargoMoverSetting cargoCommand = CargoMoverSetting.STOP;
+
         if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER) || driverLeft.getTrigger()) {
-            cargo.intake(CargoMoverSetting.THROUGH);
+            cargoCommand = CargoMoverSetting.THROUGH;
         } else if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
-            cargo.intake(CargoMoverSetting.BACK);
-        } else if (!driverLeft.getTrigger()) {
-            cargo.intake(CargoMoverSetting.STOP);
-        }
+            cargoCommand = CargoMoverSetting.BACK;
+        }        
+        cargo.intake(cargoCommand);
 
         funnelRollerButtonRunner.update();
         jackButtonRunner.update();
