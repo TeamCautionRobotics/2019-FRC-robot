@@ -262,7 +262,7 @@ public class Robot extends TimedRobot {
             cargoCommand = CargoMoverSetting.THROUGH;
         } else if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
             cargoCommand = CargoMoverSetting.BACK;
-        }        
+        }  
         cargo.intake(cargoCommand);
 
         funnelRollerButtonRunner.update();
