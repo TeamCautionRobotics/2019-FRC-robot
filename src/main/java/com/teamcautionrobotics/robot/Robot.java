@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
 
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
-    double jerkLimit = 4.5;
+    private double jerkLimit = 4.5;
 
     DigitalInput velcroHatchLimitSwitch;
 
@@ -87,8 +87,8 @@ public class Robot extends TimedRobot {
     private ButtonPressRunner funnelRollerButtonRunner;
     private ButtonPressRunner aimingLightsButtonRunner;
 
-    boolean smoothDrivingEnabled = true;
-    boolean smoothDrivingButtonPressed = false;
+    private boolean smoothDrivingEnabled = true;
+    private boolean smoothDrivingButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = true;
 
