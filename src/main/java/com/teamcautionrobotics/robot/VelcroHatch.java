@@ -3,18 +3,23 @@ package com.teamcautionrobotics.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class VelcroHatch {
 
+    private DigitalInput velcroHatchLimitSwitch;
     // motor object
     private final VictorSP winch;
     // pneumatics objects
     private Solenoid pusher;
 
-    public VelcroHatch(int winchPort, int pusherPort) {
+    public VelcroHatch(int winchPort, int pusherPort, int limitSwitchPort) {
         winch = new VictorSP(winchPort);
         // Positive raises winch
         winch.setInverted(true);
         pusher = new Solenoid(pusherPort);
+
+        velcroHatchLimitSwitch = new DigitalInput(limitSwitchPort);
     }
 
     public void rotate(double power) {
@@ -23,5 +28,9 @@ public class VelcroHatch {
 
     public void deploy(boolean activate) {
         pusher.set(activate);
+    }
+
+    public boolean armIsUp() {
+        return !velcroHatchLimitSwitch.get();
     }
 }
