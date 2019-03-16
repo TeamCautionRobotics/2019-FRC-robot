@@ -11,13 +11,13 @@ public class VelcroHatch {
     // pneumatics objects
     private Solenoid pusher;
 
-    public VelcroHatch(int winchPort, int pusherPort) {
+    public VelcroHatch(int winchPort, int pusherPort, int limitSwitchPort) {
         winch = new VictorSP(winchPort);
         // Positive raises winch
         winch.setInverted(true);
         pusher = new Solenoid(pusherPort);
 
-        velcroHatchLimitSwitch = new DigitalInput(0);
+        velcroHatchLimitSwitch = new DigitalInput(limitSwitchPort);
     }
 
     public boolean armIsUp(){
