@@ -76,8 +76,6 @@ public class Robot extends TimedRobot {
     // to the actual jerk of the robot in m/s^3
     double jerkLimit = 4.5;
 
-    DigitalInput velcroHatchLimitSwitch;
-
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
 
@@ -135,8 +133,6 @@ public class Robot extends TimedRobot {
         jerkTimer.reset();
         jerkTimer.start();
 
-        velcroHatchLimitSwitch = new DigitalInput(0);
-
         if (!USING_VELCRO_HATCH) {
             reacherButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
                     expanderHatch::toggleReacher);
@@ -188,8 +184,9 @@ public class Robot extends TimedRobot {
                     : VELCRO_HATCH_ARM_DOWN_COEFFICIENT;
             double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER
                     + velcroArmScalingFactor * -manipulator.getAxis(Axis.LEFT_Y);
-
-            if (!velcroHatchLimitSwitch.get()) {
+            
+            //returns true if not pressed - pressed when up
+            if (velcroHatch.armIsUp()) {
                 velcroHatch.rotate(Math.min(armPower, 0) + VELCRO_HATCH_ARM_PASSIVE_POWER);
             } else {
                 velcroHatch.rotate(armPower);
