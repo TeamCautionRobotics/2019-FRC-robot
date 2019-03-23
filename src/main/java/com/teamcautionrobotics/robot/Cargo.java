@@ -41,7 +41,8 @@ public class Cargo {
         currentFunnelRollerState = false;
     }
 
-    public Cargo(int funnelRollerPort, int exitFlapDeployerForwardChannel, int exitFlapDeployerBackwardChannel, int funnelRollerDeployerPort) {
+    public Cargo(int funnelRollerPort, int exitFlapDeployerForwardChannel, int exitFlapDeployerBackwardChannel,
+            int funnelRollerDeployerPort) {
         cargoMover = new VictorSP(funnelRollerPort);
         // Positive moves ball up (THROUGH)
         cargoMover.setInverted(true);

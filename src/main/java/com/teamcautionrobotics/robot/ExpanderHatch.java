@@ -27,7 +27,8 @@ public class ExpanderHatch {
         usingDoubleSolenoids = false;
     }
 
-    public ExpanderHatch(int reacherForwardChannel, int reacherBackwardChannel, int grabberForwardChannel, int grabberBackwardChannel) {
+    public ExpanderHatch(int reacherForwardChannel, int reacherBackwardChannel, int grabberForwardChannel,
+            int grabberBackwardChannel) {
         doubleReacher = new DoubleSolenoid(reacherForwardChannel, reacherBackwardChannel);
         doubleGrabber = new DoubleSolenoid(grabberForwardChannel, grabberBackwardChannel);
         usingDoubleSolenoids = true;
