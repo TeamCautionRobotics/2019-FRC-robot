@@ -178,8 +178,8 @@ public class Robot extends TimedRobot {
                     : VELCRO_HATCH_ARM_DOWN_COEFFICIENT;
             double armPower = VELCRO_HATCH_ARM_PASSIVE_POWER
                     + velcroArmScalingFactor * -manipulator.getAxis(Axis.LEFT_Y);
-            
-            //returns true if not pressed - pressed when up
+
+            // returns true if not pressed - pressed when up
             if (velcroHatch.armIsUp()) {
                 velcroHatch.rotate(Math.min(armPower, 0) + VELCRO_HATCH_ARM_PASSIVE_POWER);
             } else {
@@ -249,13 +249,14 @@ public class Robot extends TimedRobot {
 
         lastPower = forwardCommand;
 
+        CargoMoverSetting cargoCommand = CargoMoverSetting.STOP;
+
         if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER) || driverLeft.getTrigger()) {
-            cargo.intake(CargoMoverSetting.THROUGH);
+            cargoCommand = CargoMoverSetting.THROUGH;
         } else if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
-            cargo.intake(CargoMoverSetting.BACK);
-        } else if (!driverLeft.getTrigger()) {
-            cargo.intake(CargoMoverSetting.STOP);
+            cargoCommand = CargoMoverSetting.BACK;
         }
+        cargo.intake(cargoCommand);
 
         funnelRollerButtonRunner.update();
         jackButtonRunner.update();
