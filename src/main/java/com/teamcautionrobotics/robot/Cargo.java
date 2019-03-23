@@ -61,7 +61,7 @@ public class Cargo {
 
     public void deployExitFlap(boolean goingUp) {
         if (usingDoubleSolenoids) {
-            doubleExitFlapDeployer.set((goingUp) ? Value.kForward : Value.kOff);
+            doubleExitFlapDeployer.set((goingUp) ? Value.kForward : Value.kReverse);
         } else {
             exitFlapDeployer.set(goingUp);
         }
