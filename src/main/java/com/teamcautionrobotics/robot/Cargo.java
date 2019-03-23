@@ -1,7 +1,9 @@
 package com.teamcautionrobotics.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Cargo {
     public enum CargoMoverSetting {
@@ -21,7 +23,10 @@ public class Cargo {
     // Attached to mechanum wheels in front of the robot that allow for more driver
     // error.
     private final Solenoid funnelRollerDeployer;
-    private final Solenoid exitFlapDeployer;
+    private Solenoid exitFlapDeployer;
+    private DoubleSolenoid doubleExitFlapDeployer;
+
+    private boolean usingDoubleSolenoids;
 
     // true if out, false if in.
     private boolean currentFunnelRollerState;
@@ -32,7 +37,18 @@ public class Cargo {
         cargoMover.setInverted(true);
         exitFlapDeployer = new Solenoid(exitFlapDeployerPort);
         funnelRollerDeployer = new Solenoid(funnelRollerDeployerPort);
+        usingDoubleSolenoids = false;
         currentFunnelRollerState = false;
+    }
+
+    public Cargo(int funnelRollerPort, int exitFlapDeployerForwardChannel, int exitFlapDeployerBackwardChannel, int funnelRollerDeployerPort) {
+        cargoMover = new VictorSP(funnelRollerPort);
+        // Positive moves ball up (THROUGH)
+        cargoMover.setInverted(true);
+        doubleExitFlapDeployer = new DoubleSolenoid(exitFlapDeployerForwardChannel, exitFlapDeployerBackwardChannel);
+        funnelRollerDeployer = new Solenoid(funnelRollerDeployerPort);
+        usingDoubleSolenoids = true;
+        currentFunnelRollerState = true;
     }
 
     public void intake(double power) {
@@ -44,7 +60,11 @@ public class Cargo {
     }
 
     public void deployExitFlap(boolean goingUp) {
-        exitFlapDeployer.set(goingUp);
+        if (usingDoubleSolenoids) {
+            doubleExitFlapDeployer.set((goingUp) ? Value.kForward : Value.kOff);
+        } else {
+            exitFlapDeployer.set(goingUp);
+        }
     }
 
     public void setFunnelRollerDeployer(boolean out) {
