@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
     private boolean smoothDrivingButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = true;
+    private final boolean USING_DOUBLE_SOLENOIDS = true;
 
     // Time the robot should drive backwards for after deploying the hatch
     private final double HATCH_DEPLOY_DRIVEBACK_TIME = 0.25;
@@ -114,12 +115,12 @@ public class Robot extends TimedRobot {
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1);
         habJack = new HABJack(0);
-        cargo = new Cargo(3, 1, 3);
+        cargo = (USING_DOUBLE_SOLENOIDS) ? new Cargo(3, 1, 2, 7) : new Cargo(3, 1, 3);
 
         if (USING_VELCRO_HATCH) {
-            velcroHatch = new VelcroHatch(2, 2, 0);
+            velcroHatch = (USING_DOUBLE_SOLENOIDS) ? new VelcroHatch(2, 3, 4, 0) : new VelcroHatch(2, 2, 0);
         } else {
-            expanderHatch = new ExpanderHatch(4, 5);
+            expanderHatch = (USING_DOUBLE_SOLENOIDS) ? new ExpanderHatch(3, 4, 5, 6) : new ExpanderHatch(4, 5);
         }
 
         aimingLights = new AimingLights(0, 1);
