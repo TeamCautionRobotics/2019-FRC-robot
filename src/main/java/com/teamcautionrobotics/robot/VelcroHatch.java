@@ -15,7 +15,7 @@ public class VelcroHatch {
     private final Solenoid pusher;
     private final DoubleSolenoid doublePusher;
 
-    private boolean usingDoubleSolenoids;
+    private final boolean usingDoubleSolenoids;
 
     public VelcroHatch(int winchPort, int pusherPort, int limitSwitchPort) {
         winch = new VictorSP(winchPort);

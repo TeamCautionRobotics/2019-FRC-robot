@@ -26,7 +26,7 @@ public class Cargo {
     private final Solenoid exitFlapDeployer;
     private final DoubleSolenoid doubleExitFlapDeployer;
 
-    private boolean usingDoubleSolenoids;
+    private final boolean usingDoubleSolenoids;
 
     // true if out, false if in.
     private boolean currentFunnelRollerState;

@@ -15,7 +15,7 @@ public class ExpanderHatch {
     private final DoubleSolenoid doubleReacher;
     private final DoubleSolenoid doubleGrabber;
 
-    private boolean usingDoubleSolenoids;
+    private final boolean usingDoubleSolenoids;
 
     // true is out
     private boolean reacherState;
