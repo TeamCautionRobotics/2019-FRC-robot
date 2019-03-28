@@ -42,7 +42,7 @@ public class ExpanderHatch {
 
     public void reach(boolean out) {
         if (usingDoubleSolenoids) {
-            doubleReacher.set((out) ? Value.kForward : Value.kReverse);
+            doubleReacher.set(out ? Value.kForward : Value.kReverse);
         } else {
             reacher.set(out);
         }
@@ -55,7 +55,7 @@ public class ExpanderHatch {
 
     public void grab(boolean out) {
         if (usingDoubleSolenoids) {
-            doubleGrabber.set((out) ? Value.kForward : Value.kReverse);
+            doubleGrabber.set(out ? Value.kForward : Value.kReverse);
         } else {
             grabber.set(out);
         }

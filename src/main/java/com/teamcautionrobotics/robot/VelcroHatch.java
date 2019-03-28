@@ -45,7 +45,7 @@ public class VelcroHatch {
 
     public void deploy(boolean activate) {
         if (usingDoubleSolenoids) {
-            doublePusher.set((activate) ? Value.kForward : Value.kReverse);
+            doublePusher.set(activate ? Value.kForward : Value.kReverse);
         } else {
             pusher.set(activate);
         }
