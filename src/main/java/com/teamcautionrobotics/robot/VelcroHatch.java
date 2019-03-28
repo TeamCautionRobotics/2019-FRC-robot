@@ -12,8 +12,8 @@ public class VelcroHatch {
     // motor object
     private final VictorSP winch;
     // pneumatics objects
-    private Solenoid pusher;
-    private DoubleSolenoid doublePusher;
+    private final Solenoid pusher;
+    private final DoubleSolenoid doublePusher;
 
     private boolean usingDoubleSolenoids;
 
@@ -22,6 +22,7 @@ public class VelcroHatch {
         // Positive raises winch
         winch.setInverted(true);
         pusher = new Solenoid(pusherPort);
+        doublePusher = null;
 
         velcroHatchLimitSwitch = new DigitalInput(limitSwitchPort);
         usingDoubleSolenoids = false;
@@ -31,6 +32,7 @@ public class VelcroHatch {
         winch = new VictorSP(winchPort);
         // Positive raises winch
         winch.setInverted(true);
+        pusher = null;
         doublePusher = new DoubleSolenoid(pusherForwardChannel, pusherReverseChannel);
 
         velcroHatchLimitSwitch = new DigitalInput(limitSwitchPort);

@@ -23,8 +23,8 @@ public class Cargo {
     // Attached to mechanum wheels in front of the robot that allow for more driver
     // error.
     private final Solenoid funnelRollerDeployer;
-    private Solenoid exitFlapDeployer;
-    private DoubleSolenoid doubleExitFlapDeployer;
+    private final Solenoid exitFlapDeployer;
+    private final DoubleSolenoid doubleExitFlapDeployer;
 
     private boolean usingDoubleSolenoids;
 
@@ -36,6 +36,7 @@ public class Cargo {
         // Positive moves ball up (THROUGH)
         cargoMover.setInverted(true);
         exitFlapDeployer = new Solenoid(exitFlapDeployerPort);
+        doubleExitFlapDeployer = null;
         funnelRollerDeployer = new Solenoid(funnelRollerDeployerPort);
         usingDoubleSolenoids = false;
         currentFunnelRollerState = false;
@@ -46,6 +47,7 @@ public class Cargo {
         cargoMover = new VictorSP(funnelRollerPort);
         // Positive moves ball up (THROUGH)
         cargoMover.setInverted(true);
+        exitFlapDeployer = null;
         doubleExitFlapDeployer = new DoubleSolenoid(exitFlapDeployerForwardChannel, exitFlapDeployerBackwardChannel);
         funnelRollerDeployer = new Solenoid(funnelRollerDeployerPort);
         usingDoubleSolenoids = true;

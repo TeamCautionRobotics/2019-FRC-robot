@@ -9,11 +9,11 @@ public class ExpanderHatch {
     // pneumatics objects
     // reacher extends away from the robot
     // grabber piston applies friction to the hatch by expanding
-    private Solenoid reacher;
-    private Solenoid grabber;
+    private final Solenoid reacher;
+    private final Solenoid grabber;
 
-    private DoubleSolenoid doubleReacher;
-    private DoubleSolenoid doubleGrabber;
+    private final DoubleSolenoid doubleReacher;
+    private final DoubleSolenoid doubleGrabber;
 
     private boolean usingDoubleSolenoids;
 
@@ -24,11 +24,17 @@ public class ExpanderHatch {
     public ExpanderHatch(int reacherPort, int grabberPort) {
         reacher = new Solenoid(reacherPort);
         grabber = new Solenoid(grabberPort);
+
+        doubleGrabber = null;
+        doubleReacher = null;
         usingDoubleSolenoids = false;
     }
 
     public ExpanderHatch(int reacherForwardChannel, int reacherBackwardChannel, int grabberForwardChannel,
             int grabberBackwardChannel) {
+        reacher = null;
+        grabber = null;
+
         doubleReacher = new DoubleSolenoid(reacherForwardChannel, reacherBackwardChannel);
         doubleGrabber = new DoubleSolenoid(grabberForwardChannel, grabberBackwardChannel);
         usingDoubleSolenoids = true;
