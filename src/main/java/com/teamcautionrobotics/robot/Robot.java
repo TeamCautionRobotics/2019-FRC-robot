@@ -115,12 +115,12 @@ public class Robot extends TimedRobot {
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1);
         habJack = new HABJack(0);
-        cargo = (USING_DOUBLE_SOLENOIDS) ? new Cargo(3, 2, 1, 7) : new Cargo(3, 1, 3);
+        cargo = USING_DOUBLE_SOLENOIDS ? new Cargo(3, 2, 1, 7) : new Cargo(3, 1, 3);
 
         if (USING_VELCRO_HATCH) {
-            velcroHatch = (USING_DOUBLE_SOLENOIDS) ? new VelcroHatch(2, 4, 3, 0) : new VelcroHatch(2, 2, 0);
+            velcroHatch = USING_DOUBLE_SOLENOIDS ? new VelcroHatch(2, 4, 3, 0) : new VelcroHatch(2, 2, 0);
         } else {
-            expanderHatch = (USING_DOUBLE_SOLENOIDS) ? new ExpanderHatch(4, 3, 6, 5) : new ExpanderHatch(4, 5);
+            expanderHatch = USING_DOUBLE_SOLENOIDS ? new ExpanderHatch(4, 3, 6, 5) : new ExpanderHatch(4, 5);
         }
 
         aimingLights = new AimingLights(0, 1);
