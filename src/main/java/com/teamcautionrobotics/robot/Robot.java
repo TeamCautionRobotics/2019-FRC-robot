@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
     private boolean smoothDrivingEnabled = true;
     private boolean smoothDrivingButtonPressed = false;
 
-    private final boolean USING_VELCRO_HATCH = true;
+    private final boolean USING_VELCRO_HATCH = false;
     private final boolean USING_DOUBLE_SOLENOIDS = true;
 
     // Time the robot should drive backwards for after deploying the hatch
