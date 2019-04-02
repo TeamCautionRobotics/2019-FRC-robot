@@ -5,6 +5,10 @@ plugins {
 
 def ROBOT_MAIN_CLASS = "com.teamcautionrobotics.robot.Main"
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:all"
+}
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
