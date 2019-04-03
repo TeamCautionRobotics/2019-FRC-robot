@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
      * Button 2, Toggle aiming lights
      * 
      * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
-     * driving toggle; Button 3, precision turning mode
+     * deriving toggle; Button 3, precision turning mode
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Cargo deploy exit flap; Right
@@ -84,8 +84,8 @@ public class Robot extends TimedRobot {
     private ButtonPressRunner funnelRollerButtonRunner;
     private ButtonPressRunner aimingLightsButtonRunner;
 
-    private boolean smoothDrivingEnabled = true;
-    private boolean smoothDrivingButtonPressed = false;
+    private boolean smoothDerivingEnabled = true;
+    private boolean smoothDerivingButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = false;
     private final boolean USING_DOUBLE_SOLENOIDS = true;
@@ -222,15 +222,15 @@ public class Robot extends TimedRobot {
          * This math is wrong, but it has a pun so it will stay.
          */
 
-        if (!smoothDrivingButtonPressed && driverRight.getRawButton(2)) {
-            smoothDrivingEnabled = !smoothDrivingEnabled;
+        if (!smoothDerivingButtonPressed && driverRight.getRawButton(2)) {
+            smoothDerivingEnabled = !smoothDerivingEnabled;
         }
-        smoothDrivingButtonPressed = driverRight.getRawButton(2);
-        SmartDashboard.putBoolean("Smooth deriving enable", smoothDrivingEnabled);
+        smoothDerivingButtonPressed = driverRight.getRawButton(2);
+        SmartDashboard.putBoolean("Smooth deriving enabled", smoothDerivingEnabled);
 
         double driveLeftCommand;
         double driveRightCommand;
-        if (smoothDrivingEnabled) {
+        if (smoothDerivingEnabled) {
             inputDerivative = (forwardCommand - lastPower) / dt;
 
             // limit jerk for each side if predicted jerk is too high
