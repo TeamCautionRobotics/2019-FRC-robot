@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 /**
  * ButtonPressRunner
  */
-public class ButtonPressRunner {
+public class ButtonToggleRunner {
     private final BooleanSupplier getButton;
     private final Runnable runnable;
     private boolean lastButtonState;
@@ -17,7 +17,7 @@ public class ButtonPressRunner {
      * @param getButton returns the state of the button controlling the runnable
      * @param runnable called when the button is pressed
      */
-    public ButtonPressRunner(BooleanSupplier getButton, Runnable runnable) {
+    public ButtonToggleRunner(BooleanSupplier getButton, Runnable runnable) {
         this.getButton = getButton;
         this.runnable = runnable;
         lastButtonState = this.getButton.getAsBoolean();

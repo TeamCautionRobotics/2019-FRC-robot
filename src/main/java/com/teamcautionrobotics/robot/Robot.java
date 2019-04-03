@@ -7,7 +7,7 @@
 
 package com.teamcautionrobotics.robot;
 
-import com.teamcautionrobotics.misc2019.ButtonPressRunner;
+import com.teamcautionrobotics.misc2019.ButtonToggleRunner;
 import com.teamcautionrobotics.misc2019.EnhancedJoystick;
 import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
@@ -76,13 +76,13 @@ public class Robot extends TimedRobot {
     boolean deployButtonPressed = false;
 
     // These are for the Expander Hatch mechanism.
-    private ButtonPressRunner grabberButtonRunner;
-    private ButtonPressRunner reacherButtonRunner;
+    private ButtonToggleRunner grabberButtonRunner;
+    private ButtonToggleRunner reacherButtonRunner;
 
-    private ButtonPressRunner exitFlapButtonRunner;
+    private ButtonToggleRunner exitFlapButtonRunner;
 
-    private ButtonPressRunner funnelRollerButtonRunner;
-    private ButtonPressRunner aimingLightsButtonRunner;
+    private ButtonToggleRunner funnelRollerButtonRunner;
+    private ButtonToggleRunner aimingLightsButtonRunner;
 
     private boolean smoothDerivingEnabled = true;
     private boolean smoothDerivingButtonPressed = false;
@@ -132,16 +132,16 @@ public class Robot extends TimedRobot {
         lastPower = 0;
 
         if (!USING_VELCRO_HATCH) {
-            reacherButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
+            reacherButtonRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
                     expanderHatch::toggleReacher);
-            grabberButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
+            grabberButtonRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
                     expanderHatch::toggleGrabber);
         }
 
-        funnelRollerButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.A),
+        funnelRollerButtonRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.A),
                 cargo::toggleFunnelRoller);
-        exitFlapButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.X), cargo::toggleExitFlap);
-        aimingLightsButtonRunner = new ButtonPressRunner(() -> driverLeft.getRawButton(2), aimingLights::toggleState);
+        exitFlapButtonRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.X), cargo::toggleExitFlap);
+        aimingLightsButtonRunner = new ButtonToggleRunner(() -> driverLeft.getRawButton(2), aimingLights::toggleState);
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
