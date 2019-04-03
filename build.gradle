@@ -5,6 +5,10 @@ plugins {
 
 def ROBOT_MAIN_CLASS = "com.teamcautionrobotics.robot.Main"
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:all"
+}
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
@@ -40,6 +44,15 @@ def includeDesktopSupport = true
 // Maven central needed for JUnit
 repositories {
     mavenCentral()
+
+    // umldoclet is not in a repository, so use a local copy instead
+    flatDir {
+        dirs 'gradle/deps'
+    }
+}
+
+configurations {
+    umlDoclet
 }
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
@@ -50,6 +63,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     testCompile 'junit:junit:4.12'
+    umlDoclet "nl.talsmasoftware:umldoclet:2.+"
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
@@ -58,4 +72,11 @@ dependencies {
 jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    options.docletpath = configurations.umlDoclet.files.asType(List)
+    options.doclet = "nl.talsmasoftware.umldoclet.UMLDoclet"
+    options.addBooleanOption "createPumlFiles", true
 }
