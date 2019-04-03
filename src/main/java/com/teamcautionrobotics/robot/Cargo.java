@@ -29,6 +29,7 @@ public class Cargo {
     private final boolean usingDoubleSolenoids;
 
     // true if out, false if in.
+    private boolean currentExitFlapState;
     private boolean currentFunnelRollerState;
 
     public Cargo(int funnelRollerPort, int exitFlapDeployerPort, int funnelRollerDeployerPort) {
@@ -40,6 +41,7 @@ public class Cargo {
         funnelRollerDeployer = new Solenoid(funnelRollerDeployerPort);
         usingDoubleSolenoids = false;
         currentFunnelRollerState = false;
+        currentExitFlapState = false;
     }
 
     public Cargo(int funnelRollerPort, int exitFlapDeployerForwardChannel, int exitFlapDeployerBackwardChannel,
@@ -68,6 +70,11 @@ public class Cargo {
         } else {
             exitFlapDeployer.set(goingUp);
         }
+    }
+
+    public void toggleExitFlap()
+    {
+        deployExitFlap(!currentExitFlapState);
     }
 
     public void setFunnelRollerDeployer(boolean out) {
