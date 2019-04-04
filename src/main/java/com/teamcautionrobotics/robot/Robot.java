@@ -132,9 +132,9 @@ public class Robot extends TimedRobot {
         lastPower = 0;
 
         if (!USING_VELCRO_HATCH) {
-            reacherToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
+            reacherToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.Y),
                     expanderHatch::toggleReacher);
-            grabberToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
+            grabberToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.B),
                     expanderHatch::toggleGrabber);
         }
 
