@@ -7,7 +7,7 @@
 
 package com.teamcautionrobotics.robot;
 
-import com.teamcautionrobotics.misc2019.ButtonPressRunner;
+import com.teamcautionrobotics.misc2019.ButtonToggleRunner;
 import com.teamcautionrobotics.misc2019.EnhancedJoystick;
 import com.teamcautionrobotics.misc2019.Gamepad;
 import com.teamcautionrobotics.misc2019.Gamepad.Axis;
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
      * Button 2, Toggle aiming lights
      * 
      * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
-     * driving toggle; Button 3, precision turning mode
+     * deriving toggle; Button 3, precision turning mode
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
      * mechanism extender); B, Deploy hatch (velcro mech); X, Cargo deploy exit flap; Right
@@ -76,16 +76,16 @@ public class Robot extends TimedRobot {
     boolean deployButtonPressed = false;
 
     // These are for the Expander Hatch mechanism.
-    private ButtonPressRunner grabberButtonRunner;
-    private ButtonPressRunner reacherButtonRunner;
+    private ButtonToggleRunner grabberToggleRunner;
+    private ButtonToggleRunner reacherToggleRunner;
 
-    private ButtonPressRunner exitFlapButtonRunner;
+    private ButtonToggleRunner exitFlapToggleRunner;
 
-    private ButtonPressRunner funnelRollerButtonRunner;
-    private ButtonPressRunner aimingLightsButtonRunner;
+    private ButtonToggleRunner funnelRollerToggleRunner;
+    private ButtonToggleRunner aimingLightsToggleRunner;
 
-    private boolean smoothDrivingEnabled = true;
-    private boolean smoothDrivingButtonPressed = false;
+    private boolean smoothDerivingEnabled = true;
+    private boolean smoothDerivingButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = false;
     private final boolean USING_DOUBLE_SOLENOIDS = true;
@@ -132,16 +132,16 @@ public class Robot extends TimedRobot {
         lastPower = 0;
 
         if (!USING_VELCRO_HATCH) {
-            reacherButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
+            reacherToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
                     expanderHatch::toggleReacher);
-            grabberButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
+            grabberToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
                     expanderHatch::toggleGrabber);
         }
 
-        funnelRollerButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.A),
+        funnelRollerToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.A),
                 cargo::toggleFunnelRoller);
-        exitFlapButtonRunner = new ButtonPressRunner(() -> manipulator.getButton(Button.X), cargo::toggleExitFlap);
-        aimingLightsButtonRunner = new ButtonPressRunner(() -> driverLeft.getRawButton(2), aimingLights::toggleState);
+        exitFlapToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.X), cargo::toggleExitFlap);
+        aimingLightsToggleRunner = new ButtonToggleRunner(() -> driverLeft.getRawButton(2), aimingLights::toggleState);
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -201,8 +201,8 @@ public class Robot extends TimedRobot {
                 turnCommand = 0;
             }
         } else {
-            reacherButtonRunner.update();
-            grabberButtonRunner.update();
+            reacherToggleRunner.update();
+            grabberToggleRunner.update();
         }
 
         // change in time between RobotPeriodic() calls
@@ -222,15 +222,15 @@ public class Robot extends TimedRobot {
          * This math is wrong, but it has a pun so it will stay.
          */
 
-        if (!smoothDrivingButtonPressed && driverRight.getRawButton(2)) {
-            smoothDrivingEnabled = !smoothDrivingEnabled;
+        if (!smoothDerivingButtonPressed && driverRight.getRawButton(2)) {
+            smoothDerivingEnabled = !smoothDerivingEnabled;
         }
-        smoothDrivingButtonPressed = driverRight.getRawButton(2);
-        SmartDashboard.putBoolean("Smooth deriving enable", smoothDrivingEnabled);
+        smoothDerivingButtonPressed = driverRight.getRawButton(2);
+        SmartDashboard.putBoolean("Smooth deriving enabled", smoothDerivingEnabled);
 
         double driveLeftCommand;
         double driveRightCommand;
-        if (smoothDrivingEnabled) {
+        if (smoothDerivingEnabled) {
             inputDerivative = (forwardCommand - lastPower) / dt;
 
             // limit jerk for each side if predicted jerk is too high
@@ -259,9 +259,9 @@ public class Robot extends TimedRobot {
         }
         cargo.intake(cargoCommand);
 
-        funnelRollerButtonRunner.update();
-        exitFlapButtonRunner.update();
-        aimingLightsButtonRunner.update();
+        funnelRollerToggleRunner.update();
+        exitFlapToggleRunner.update();
+        aimingLightsToggleRunner.update();
 
         habJack.setJack(driverRight.getTrigger());
 
