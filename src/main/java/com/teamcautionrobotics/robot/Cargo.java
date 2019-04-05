@@ -58,7 +58,7 @@ public class Cargo {
     }
 
     public void intake(double power) {
-        cargoMover.set(power);
+        cargoMover.set(-power);
     }
 
     public void intake(CargoMoverSetting funnelRollerSetting) {
