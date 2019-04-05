@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
     // This value is the derivative of the input power, which is only proportional
     // to the actual jerk of the robot in m/s^3
     private double jerkLimit = 4.5;
+    private final String jerkLimitKey = "Jerk Limit";
 
     // This is for the VelcroHatch mechanism.
     boolean deployButtonPressed = false;
@@ -146,7 +147,12 @@ public class Robot extends TimedRobot {
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
 
-        SmartDashboard.putNumber("Jerk Limit", jerkLimit);
+        // Check if the jerkLimit exists in the SmartDashboard, if not add it
+        if (SmartDashboard.containsKey(jerkLimitKey)) {
+            SmartDashboard.putNumber(jerkLimitKey, jerkLimit);
+        } else {
+            jerkLimit = SmartDashboard.getNumber(jerkLimitKey, jerkLimit);
+        }
     }
 
     /**
