@@ -175,7 +175,7 @@ public class Robot extends TimedRobot {
         double forwardCommand = -driverRight.getY();
         double turnCommand = driverLeft.getX();
 
-        if (precisionTurningEngaged) {
+        if (false) {
             turnCommand *= PRECISION_TURNING_SCALING_FACTOR;
         }
 
@@ -235,7 +235,7 @@ public class Robot extends TimedRobot {
 
         double driveLeftCommand;
         double driveRightCommand;
-        if (smoothDerivingEnabled) {
+        if (false) {
             inputDerivative = (forwardCommand - lastPower) / dt;
 
             // limit jerk for each side if predicted jerk is too high
