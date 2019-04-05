@@ -120,7 +120,7 @@ public class Robot extends TimedRobot {
         if (USING_VELCRO_HATCH) {
             velcroHatch = USING_DOUBLE_SOLENOIDS ? new VelcroHatch(2, 4, 3, 0) : new VelcroHatch(2, 2, 0);
         } else {
-            expanderHatch = USING_DOUBLE_SOLENOIDS ? new ExpanderHatch(4, 3, 2, 1) : new ExpanderHatch(4, 5);
+            expanderHatch = USING_DOUBLE_SOLENOIDS ? new ExpanderHatch(4, 3, 2, 1) : new ExpanderHatch(4, 2);
         }
 
         aimingLights = new AimingLights(0, 1);
