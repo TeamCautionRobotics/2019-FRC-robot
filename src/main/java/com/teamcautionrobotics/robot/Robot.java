@@ -84,6 +84,9 @@ public class Robot extends TimedRobot {
     private ButtonToggleRunner funnelRollerToggleRunner;
     private ButtonToggleRunner aimingLightsToggleRunner;
 
+    private ButtonToggleRunner frontJackToggleRunner;
+    private ButtonToggleRunner backJackToggleRunner;
+
     private boolean smoothDerivingEnabled = true;
     private boolean smoothDerivingButtonPressed = false;
 
@@ -114,7 +117,7 @@ public class Robot extends TimedRobot {
 
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1);
-        habJack = new HABJack(1);
+        habJack = new HABJack(1, 7);
         cargo = USING_DOUBLE_SOLENOIDS ? new Cargo(3, 6, 5, 7) : new Cargo(3, 0, 3);
 
         if (USING_VELCRO_HATCH) {
@@ -142,6 +145,8 @@ public class Robot extends TimedRobot {
                 cargo::toggleFunnelRoller);
         exitFlapToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.X), cargo::toggleExitFlap);
         aimingLightsToggleRunner = new ButtonToggleRunner(() -> driverLeft.getRawButton(2), aimingLights::toggleState);
+        frontJackToggleRunner = new ButtonToggleRunner(() -> driverLeft.getRawButton(2) || driverLeft.getRawButton(3), habJack::toggleFrontJack);
+        backJackToggleRunner = new ButtonToggleRunner(() -> driverRight.getTrigger(), habJack::toggleFrontJack);
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -262,8 +267,8 @@ public class Robot extends TimedRobot {
         funnelRollerToggleRunner.update();
         exitFlapToggleRunner.update();
         aimingLightsToggleRunner.update();
-
-        habJack.setJack(driverRight.getTrigger());
+        frontJackToggleRunner.update();
+        backJackToggleRunner.update();
 
         jerkLimit = SmartDashboard.getNumber("Jerk Limit", jerkLimit);
     }
