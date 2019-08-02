@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     private boolean smoothDerivingButtonPressed = false;
 
     private final boolean USING_VELCRO_HATCH = false;
-    private final boolean USING_DOUBLE_SOLENOIDS = true;
+    private final boolean USING_DOUBLE_SOLENOIDS = false;
 
     // Time the robot should drive backwards for after deploying the hatch
     private final double HATCH_DEPLOY_DRIVEBACK_TIME = 0.25;
