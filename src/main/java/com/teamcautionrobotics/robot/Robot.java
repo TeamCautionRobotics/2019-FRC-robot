@@ -252,9 +252,9 @@ public class Robot extends TimedRobot {
 
         CargoMoverSetting cargoCommand = CargoMoverSetting.STOP;
 
-        if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER) || driverLeft.getTrigger()) {
+        if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER) || driverLeft.getTrigger()) {
             cargoCommand = CargoMoverSetting.THROUGH;
-        } else if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
+        } else if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER)) {
             cargoCommand = CargoMoverSetting.BACK;
         }
         cargo.intake(cargoCommand);

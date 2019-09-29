@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Cargo {
     public enum CargoMoverSetting {
-        THROUGH(1), BACK(-1), STOP(0);
+        THROUGH(-1), BACK(0.3), STOP(0);
 
         public final double power;
 
