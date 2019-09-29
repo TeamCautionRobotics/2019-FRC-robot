@@ -70,6 +70,7 @@ public class Cargo {
         } else {
             exitFlapDeployer.set(goingUp);
         }
+        currentExitFlapState = goingUp;
     }
 
     public void toggleExitFlap()
