@@ -33,20 +33,20 @@ public class Robot extends TimedRobot {
      * 
      * Pneumatic Control Module: 0, Cargo Exit Flap; 1, Jack; 2, Velcro hatch
      * deployer; 3, Cargo Funnel Deployer (deploys the nice-to-have wheels) 4,
-     * Expander hatch reacher; 5, Expander hatch grabber
+     * Expander hatch reacher; 2, Expander hatch grabber
      * 
      * Driver controls:
      * 
-     * Left joystick: X axis, robot turn control; Button 1, Jack for HAB;
-     * Button 2, Toggle aiming lights
+     * Left joystick: X axis, robot turn control; Button 1, Jack for HAB; Button 2,
+     * Toggle aiming lights
      * 
      * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
      * deriving toggle; Button 3, precision turning mode
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
-     * mechanism extender); B, Deploy hatch (velcro mech); X, Cargo deploy exit flap; Right
-     * trigger, Cargo; Left trigger, Cargo reverse; Right bumper, Expand expander
-     * hatch mech; Left bumper, Extend expander hatch mech past bumper zone
+     * mechanism extender); B, Deploy hatch (velcro mech); X, Cargo deploy exit
+     * flap; Right trigger, Cargo; Left trigger, Cargo reverse; Right bumper, Expand
+     * expander hatch mech; Left bumper, Extend expander hatch mech past bumper zone
      *
      * All pneumatics are toggles except for the velcro hatch deployer and the cargo
      * exit flap.
@@ -120,7 +120,7 @@ public class Robot extends TimedRobot {
         if (USING_VELCRO_HATCH) {
             velcroHatch = USING_DOUBLE_SOLENOIDS ? new VelcroHatch(2, 4, 3, 0) : new VelcroHatch(2, 2, 0);
         } else {
-            expanderHatch = USING_DOUBLE_SOLENOIDS ? new ExpanderHatch(4, 3, 2, 1) : new ExpanderHatch(4, 5);
+            expanderHatch = USING_DOUBLE_SOLENOIDS ? new ExpanderHatch(4, 3, 2, 1) : new ExpanderHatch(4, 2);
         }
 
         aimingLights = new AimingLights(0, 1);
@@ -134,7 +134,8 @@ public class Robot extends TimedRobot {
         if (!USING_VELCRO_HATCH) {
             reacherToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
                     expanderHatch::toggleReacher);
-            grabberToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
+            grabberToggleRunner = new ButtonToggleRunner(() -> (driverRight.getRawButton(2)
+                    || driverRight.getRawButton(3) || driverRight.getRawButton(4) || driverRight.getRawButton(5)),
                     expanderHatch::toggleGrabber);
         }
 
@@ -252,9 +253,9 @@ public class Robot extends TimedRobot {
 
         CargoMoverSetting cargoCommand = CargoMoverSetting.STOP;
 
-        if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER) || driverLeft.getTrigger()) {
+        if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER) || driverLeft.getTrigger()) {
             cargoCommand = CargoMoverSetting.THROUGH;
-        } else if (manipulator.getAxisAsButton(Axis.RIGHT_TRIGGER)) {
+        } else if (manipulator.getAxisAsButton(Axis.LEFT_TRIGGER)) {
             cargoCommand = CargoMoverSetting.BACK;
         }
         cargo.intake(cargoCommand);
