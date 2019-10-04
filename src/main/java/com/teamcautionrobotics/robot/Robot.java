@@ -37,16 +37,16 @@ public class Robot extends TimedRobot {
      * 
      * Driver controls:
      * 
-     * Left joystick: X axis, robot turn control; Button 1, Jack for HAB;
-     * Button 2, Toggle aiming lights
+     * Left joystick: X axis, robot turn control; Button 1, Jack for HAB; Button 2,
+     * Toggle aiming lights
      * 
      * Right Joystick: Y axis, robot forward and backward control; Button 2, smooth
      * deriving toggle; Button 3, precision turning mode
      * 
      * Gamepad: Left thumbstick, Rotate hatch arm; A, Deploy funnel roller (cargo
-     * mechanism extender); B, Deploy hatch (velcro mech); X, Cargo deploy exit flap; Right
-     * trigger, Cargo; Left trigger, Cargo reverse; Right bumper, Expand expander
-     * hatch mech; Left bumper, Extend expander hatch mech past bumper zone
+     * mechanism extender); B, Deploy hatch (velcro mech); X, Cargo deploy exit
+     * flap; Right trigger, Cargo; Left trigger, Cargo reverse; B, Expand expander
+     * hatch mech; Y, Extend expander hatch mech past bumper zone
      *
      * All pneumatics are toggles except for the velcro hatch deployer and the cargo
      * exit flap.
@@ -84,6 +84,9 @@ public class Robot extends TimedRobot {
     private ButtonToggleRunner funnelRollerToggleRunner;
     private ButtonToggleRunner aimingLightsToggleRunner;
 
+    private ButtonToggleRunner frontJackToggleRunner;
+    private ButtonToggleRunner backJackToggleRunner;
+
     private boolean smoothDerivingEnabled = true;
     private boolean smoothDerivingButtonPressed = false;
 
@@ -114,13 +117,13 @@ public class Robot extends TimedRobot {
 
         // pneumatic ports are not finalized
         driveBase = new DriveBase(0, 1);
-        habJack = new HABJack(1);
+        habJack = new HABJack(1, 7);
         cargo = USING_DOUBLE_SOLENOIDS ? new Cargo(3, 6, 5, 7) : new Cargo(3, 0, 3);
 
         if (USING_VELCRO_HATCH) {
             velcroHatch = USING_DOUBLE_SOLENOIDS ? new VelcroHatch(2, 4, 3, 0) : new VelcroHatch(2, 2, 0);
         } else {
-            expanderHatch = USING_DOUBLE_SOLENOIDS ? new ExpanderHatch(4, 3, 2, 1) : new ExpanderHatch(4, 5);
+            expanderHatch = USING_DOUBLE_SOLENOIDS ? new ExpanderHatch(4, 3, 2, 1) : new ExpanderHatch(4, 2);
         }
 
         aimingLights = new AimingLights(0, 1);
@@ -132,9 +135,9 @@ public class Robot extends TimedRobot {
         lastPower = 0;
 
         if (!USING_VELCRO_HATCH) {
-            reacherToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.LEFT_BUMPER),
+            reacherToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.Y),
                     expanderHatch::toggleReacher);
-            grabberToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.RIGHT_BUMPER),
+            grabberToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.B) || driverRight.getRawButton(2) || driverRight.getRawButton(3),
                     expanderHatch::toggleGrabber);
         }
 
@@ -142,6 +145,8 @@ public class Robot extends TimedRobot {
                 cargo::toggleFunnelRoller);
         exitFlapToggleRunner = new ButtonToggleRunner(() -> manipulator.getButton(Button.X), cargo::toggleExitFlap);
         aimingLightsToggleRunner = new ButtonToggleRunner(() -> driverLeft.getRawButton(2), aimingLights::toggleState);
+        frontJackToggleRunner = new ButtonToggleRunner(() -> driverLeft.getRawButton(2) || driverLeft.getRawButton(3), habJack::toggleFrontJack);
+        backJackToggleRunner = new ButtonToggleRunner(() -> driverRight.getTrigger(), habJack::toggleFrontJack);
 
         CameraServer.getInstance().startAutomaticCapture(0);
         CameraServer.getInstance().startAutomaticCapture(1);
@@ -170,7 +175,7 @@ public class Robot extends TimedRobot {
         double forwardCommand = -driverRight.getY();
         double turnCommand = driverLeft.getX();
 
-        if (precisionTurningEngaged) {
+        if (false) {
             turnCommand *= PRECISION_TURNING_SCALING_FACTOR;
         }
 
@@ -230,7 +235,7 @@ public class Robot extends TimedRobot {
 
         double driveLeftCommand;
         double driveRightCommand;
-        if (smoothDerivingEnabled) {
+        if (false) {
             inputDerivative = (forwardCommand - lastPower) / dt;
 
             // limit jerk for each side if predicted jerk is too high
@@ -262,8 +267,8 @@ public class Robot extends TimedRobot {
         funnelRollerToggleRunner.update();
         exitFlapToggleRunner.update();
         aimingLightsToggleRunner.update();
-
-        habJack.setJack(driverRight.getTrigger());
+        frontJackToggleRunner.update();
+        backJackToggleRunner.update();
 
         jerkLimit = SmartDashboard.getNumber("Jerk Limit", jerkLimit);
     }

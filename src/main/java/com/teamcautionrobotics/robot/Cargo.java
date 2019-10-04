@@ -54,10 +54,11 @@ public class Cargo {
         funnelRollerDeployer = new Solenoid(funnelRollerDeployerPort);
         usingDoubleSolenoids = true;
         currentFunnelRollerState = true;
+        currentExitFlapState = false;
     }
 
     public void intake(double power) {
-        cargoMover.set(power);
+        cargoMover.set(-power);
     }
 
     public void intake(CargoMoverSetting funnelRollerSetting) {
@@ -70,6 +71,7 @@ public class Cargo {
         } else {
             exitFlapDeployer.set(goingUp);
         }
+        currentExitFlapState = goingUp;
     }
 
     public void toggleExitFlap()
