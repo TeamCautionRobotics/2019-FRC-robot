@@ -52,18 +52,18 @@ public class Robot extends TimedRobot {
      * exit flap.
      */
 
-    EnhancedJoystick driverLeft, driverRight;
-    Gamepad manipulator;
+    private EnhancedJoystick driverLeft, driverRight;
+    private Gamepad manipulator;
 
-    DriveBase driveBase;
-    VelcroHatch velcroHatch;
-    ExpanderHatch expanderHatch;
-    Cargo cargo;
-    HABJack habJack;
+    private DriveBase driveBase;
+    private VelcroHatch velcroHatch;
+    private ExpanderHatch expanderHatch;
+    private Cargo cargo;
+    private HABJack habJack;
 
-    AimingLights aimingLights;
-    Timer velcroHatchTimer;
-    Timer jerkTimer;
+    private AimingLights aimingLights;
+    private Timer velcroHatchTimer;
+    private Timer jerkTimer;
 
     private double lastPower;
     private double inputDerivative;
@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
     private double jerkLimit = 4.5;
 
     // This is for the VelcroHatch mechanism.
-    boolean deployButtonPressed = false;
+    private boolean deployButtonPressed = false;
 
     // These are for the Expander Hatch mechanism.
     private ButtonToggleRunner grabberToggleRunner;
